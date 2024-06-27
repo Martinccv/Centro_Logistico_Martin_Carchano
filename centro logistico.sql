@@ -13,7 +13,8 @@ CREATE TABLE Proveedores (
     ID_Proveedor INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Direccion VARCHAR(255),
-    Telefono VARCHAR(20)
+    Telefono VARCHAR(20),
+    Rubro VARCHAR(100)
 );
 
 CREATE TABLE Materiales (
@@ -51,7 +52,8 @@ CREATE TABLE Empleados_Depositos (
     ID_Empleado_Deposito INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Cargo VARCHAR(50),
-    Telefono VARCHAR(20)
+    Telefono VARCHAR(20),
+    ID_Deposito INT
 );
 
 CREATE TABLE Empleados_Compras (
@@ -75,8 +77,7 @@ CREATE TABLE Deposito (
     ID_Deposito INT AUTO_INCREMENT PRIMARY KEY,
     ID_Material INT,
     ID_Maquina INT,
-    Cantidad INT DEFAULT 0,
-    ID_Empleado_Deposito INT
+    Cantidad INT DEFAULT 0
 );
 
 CREATE TABLE Socios_Gerentes (
@@ -154,9 +155,11 @@ ALTER TABLE Deposito
 ADD CONSTRAINT FK_Material_Deposito
 FOREIGN KEY (ID_Material) REFERENCES Materiales(ID_Material),
 ADD CONSTRAINT FK_Maquina_Deposito
-FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina),
-ADD CONSTRAINT FK_Empleados_Deposito
-FOREIGN KEY (ID_Empleado_Deposito) REFERENCES Empleados_Depositos(ID_Empleado_Deposito);
+FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina);
+
+ALTER TABLE empleados_depositos 
+ADD CONSTRAINT FK_Deposito_Empleado
+FOREIGN KEY (ID_Deposito) REFERENCES Deposito(ID_Deposito);
 
 ALTER TABLE Solicitudes
 ADD CONSTRAINT FK_Cliente_Solicitudes
