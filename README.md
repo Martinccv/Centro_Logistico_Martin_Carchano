@@ -9,6 +9,7 @@ Este proyecto implementa un sistema de gestión para un centro logístico de mat
 El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 
 <a href="https://miro.com/app/live-embed/uXjVK4abNrw=/?moveToViewport=-1502,-368,1934,1560&embedId=948505516614" target="_blank">Diagrama ER en Miro</a>
+
 <a href="https://miro.com/app/board/uXjVK4abNrw=/" target="_blank">Diagrama ER en Miro</a>
 
 ## Tablas y Relaciones
