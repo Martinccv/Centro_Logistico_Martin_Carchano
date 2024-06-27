@@ -36,6 +36,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - Nombre
 - Dirección
 - Teléfono
+- Rubro
 
 ### Clientes
 
@@ -50,11 +51,10 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - ID_Material (FK)
 - ID_Máquina (FK)
 - Cantidad
-- ID_Empleado_Depositos (FK)
 
 ### Empleados_Obra
 
-- **ID_Empleado** (PK)
+- **ID_Empleado_Obra** (PK)
 - Nombre
 - Cargo
 - Teléfono
@@ -62,7 +62,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 
 ### Empleados_Depositos
 
-- **ID_Empleado** (PK)
+- **ID_Empleado_Deposito** (PK)
 - Nombre
 - Cargo
 - Teléfono
@@ -70,7 +70,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 
 ### Empleados_Compras
 
-- **ID_Empleado** (PK)
+- **ID_Empleado_Compras** (PK)
 - Nombre
 - Cargo
 - Teléfono
@@ -81,8 +81,8 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - Fecha
 - Tipo (Máquina o Material)
 - ID_Cliente (FK, nullable)
-- ID_Encargado_Obra (FK)
-- ID_Encargado_Sector (FK)
+- ID_Empleado_Obra (FK)
+- ID_Empleado_Deposito (FK)
 - Estado (Pendiente, Parcial, Aprobada, Rechazada)
 - ID_Material (FK, nullable)
 - ID_Máquina (FK, nullable)
@@ -99,7 +99,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - ID_Máquina (FK, nullable)
 - Cantidad
 - ID_Empleado_Obra (FK, nullable)
-- ID_Empleado_Depositos (FK, nullable)
+- ID_Empleado_Deposito (FK, nullable)
 - ID_Autorización (FK)
 
 ### Obras
@@ -133,6 +133,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - ID_Material (FK)
 - Cantidad_Pendiente
 - Fecha
+- ID_Empleado_Compras (FK)
 
 ## Funcionalidades del Sistema
 
@@ -143,7 +144,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
   - Los clientes también pueden solicitar materiales y máquinas, pero estas solicitudes son ingresadas al sistema por el encargado del sector correspondiente.
 
 - **Aprobación de Solicitudes**:
-  - Las solicitudes deben ser autorizadas por el encargado del sector correspondiente (`ID_Encargado_Sector`).
+  - Las solicitudes deben ser autorizadas por el encargado del sector correspondiente (`ID_Empleado_Deposito`).
   - Si una solicitud no puede ser atendida completamente por el inventario existente, se marca como "Parcial" y los materiales pendientes se envían al sector de compras (`Pedidos_Compras`) para que realice el pedido al proveedor.
 
 ### 2. Gestión de Movimientos de Materiales y Máquinas
