@@ -157,7 +157,7 @@ FOREIGN KEY (ID_Material) REFERENCES Materiales(ID_Material),
 ADD CONSTRAINT FK_Maquina_Deposito
 FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina);
 
-ALTER TABLE empleados_depositos 
+ALTER TABLE Empleados_Depositos 
 ADD CONSTRAINT FK_Deposito_Empleado
 FOREIGN KEY (ID_Deposito) REFERENCES Deposito(ID_Deposito);
 
