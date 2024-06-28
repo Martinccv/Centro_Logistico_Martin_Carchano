@@ -225,10 +225,10 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
     - Una autorización tiene un único socio gerente.
     - Cardinalidad: 1 - *
 
-15. **Obras - Movimientos**
+15. **Movimientos - Obras (origen y destino)**
     - Una obra puede ser origen o destino de múltiples movimientos.
     - Un movimiento tiene una obra de origen y una obra de destino.
-    - Cardinalidad: * - * (separadas por obra origen y obra destino seria 1 - *)
+    - Cardinalidad: * - * (separadas por obra origen y obra destino seria * - 1)
 
 16. **Materiales - Movimientos**
     - Un material puede estar en múltiples movimientos.
@@ -269,6 +269,31 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
     - Un empleado de compras puede gestionar múltiples pedidos de compras.
     - Un pedido de compras tiene un único empleado de compras.
     - Cardinalidad: 1 - *
+
+24. **Materiales - Depósitos**
+   - Un material puede estar en múltiples depósitos.
+   - Un depósito puede contener múltiples materiales.
+   - Cardinalidad: * - *
+
+25. **Máquinas - Depósitos**
+   - Una máquina puede estar en múltiples depósitos.
+   - Un depósito puede contener múltiples máquinas.
+   - Cardinalidad: * - *
+
+26. **Depósitos - Movimientos**
+    - Un depósito puede tener múltiples movimientos asociados.
+    - Un movimiento puede involucrar un único depósito.
+    - Cardinalidad: 1 - *
+
+27. **Obras - Solicitudes**
+   - Una obra puede tener múltiples solicitudes.
+   - Una solicitud puede estar asociada a una única obra.
+   - Cardinalidad: 1 - *
+
+28. **Depositos - Solicitudes**
+   - Un deposito puede tener múltiples solicitudes.
+   - Una solicitud puede estar asociada a un solo deposito.
+   - Cardinalidad: 1 - *
 
 ## Funcionalidades del Sistema
 
