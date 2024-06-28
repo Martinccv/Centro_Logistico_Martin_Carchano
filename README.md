@@ -4,6 +4,20 @@
 
 Este proyecto implementa un sistema de gestión para un centro logístico de materiales y máquinas. El sistema permite gestionar solicitudes, movimientos, inventarios, y autorizaciones de materiales y máquinas entre obras, depósitos y proveedores.
 
+### Tablas Principales
+
+- **Proveedores:** Información de los proveedores que suministran materiales y máquinas.
+- **Materiales:** Detalles de los materiales gestionados en el centro logístico.
+- **Máquinas:** Información sobre las máquinas disponibles.
+- **Obras:** Datos de las obras donde se utilizan los materiales y máquinas.
+- **Clientes:** Información de los clientes que solicitan materiales y máquinas.
+- **Solicitudes:** Registro de solicitudes de materiales y máquinas por parte de clientes y empleados de obra.
+- **Autorizaciones:** Detalles de las autorizaciones de las solicitudes, gestionadas por los socios gerentes.
+- **Movimientos:** Registro de los movimientos de materiales y máquinas entre depósitos y obras.
+- **Pedidos_Compras:** Detalles de los pedidos de materiales realizados al sector de compras.
+
+Para más información y detalles sobre el modelo de datos, consulta el diagrama de entidad-relación incluido.
+
 ## Diagrama Entidad-Relación
 
 El siguiente diagrama muestra el modelo de entidad-relación del sistema:
@@ -86,13 +100,17 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - Estado (Pendiente, Parcial, Aprobada, Rechazada)
 - ID_Material (FK, nullable)
 - ID_Máquina (FK, nullable)
+- Cantidad
 - ID_Proveedor (FK, nullable)
+- ID_Obra
+- ID_Deposito
 
 ### Movimientos
 
 - **ID_Movimiento** (PK)
 - Fecha
 - Tipo (Entrada, Salida, Transferencia)
+- ID_Deposito
 - ID_Obra_Origen (FK, nullable)
 - ID_Obra_Destino (FK, nullable)
 - ID_Material (FK, nullable)
@@ -117,7 +135,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - **ID_Autorización** (PK)
 - ID_Solicitud (FK)
 - ID_Socio_Gerente (FK)
-- Estado (Aprobada, Rechazada)
+- Estado (Aprobada, Rechazada, Pendiente)
 - Fecha
 
 ### Socios_Gerentes
@@ -134,6 +152,123 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - Cantidad_Pendiente
 - Fecha
 - ID_Empleado_Compras (FK)
+
+### Cardinalidades de las Relaciones
+
+1. **Proveedores - Materiales**
+   - Un proveedor puede suministrar múltiples materiales.
+   - Un material puede tener varios proveedores.
+   - Cardinalidad: * - *
+
+2. **Proveedores - Máquinas**
+   - Un proveedor puede suministrar múltiples máquinas.
+   - Una máquina puede tener multiples proveedores.
+   - Cardinalidad: * - *
+
+3. **Empleados_Obra - Obras**
+   - Un empleado de obra puede estar asociado a múltiples obras.
+   - Una obra puede tiene un empleados de obra (encargado).
+   - Cardinalidad: 1 - *
+
+4. **Empleados_Depositos - Depósito**
+   - Un empleado de depósito está asociado a un único depósito.
+   - Un depósito tiene un único empleado de depósito.
+   - Cardinalidad: 1 - 1
+
+5. **Obras - Materiales**
+   - Una obra puede tener múltiples materiales.
+   - Un material puede estar en múltiples obras.
+   - Cardinalidad: * - *
+
+6. **Obras - Máquinas**
+   - Una obra puede tener múltiples máquinas.
+   - Una máquina puede estar en múltiples obras.
+   - Cardinalidad: * - *
+
+7. **Clientes - Solicitudes**
+   - Un cliente puede realizar múltiples solicitudes.
+   - Una solicitud tiene un único cliente.
+   - Cardinalidad: 1 - *
+
+8. **Empleados_Obra - Solicitudes**
+   - Un empleado de obra puede realizar múltiples solicitudes.
+   - Una solicitud tiene un único empleado de obra.
+   - Cardinalidad: 1 - *
+
+9. **Empleados_Depositos - Solicitudes**
+   - Un empleado de depósito puede gestionar múltiples solicitudes.
+   - Una solicitud es gestionada por un único empleado de depósito.
+   - Cardinalidad: 1 - *
+
+10. **Materiales - Solicitudes**
+    - Un material puede estar en múltiples solicitudes.
+    - Una solicitud puede contener múltiples materiales.
+    - Cardinalidad: * - *
+
+11. **Máquinas - Solicitudes**
+    - Una máquina puede estar en múltiples solicitudes.
+    - Una solicitud puede contener múltiples máquinas.
+    - Cardinalidad: * - *
+
+12. **Proveedores - Solicitudes**
+    - Un proveedor puede estar asociado a múltiples solicitudes.
+    - Una solicitud tiene un único proveedor.
+    - Cardinalidad: 1 - *
+
+13. **Solicitudes - Autorizaciones**
+    - Una solicitud puede tener una sola autorización.
+    - Una autorización pertenece a una única solicitud.
+    - Cardinalidad: 1 - 1
+
+14. **Socios_Gerentes - Autorizaciones**
+    - Un socio gerente puede autorizar múltiples solicitudes.
+    - Una autorización tiene un único socio gerente.
+    - Cardinalidad: 1 - *
+
+15. **Obras - Movimientos**
+    - Una obra puede ser origen o destino de múltiples movimientos.
+    - Un movimiento tiene una obra de origen y una obra de destino.
+    - Cardinalidad: * - * (separadas por obra origen y obra destino seria 1 - *)
+
+16. **Materiales - Movimientos**
+    - Un material puede estar en múltiples movimientos.
+    - Un movimiento puede tener múltiples materiales.
+    - Cardinalidad: * - *
+
+17. **Máquinas - Movimientos**
+    - Una máquina puede estar en múltiples movimientos.
+    - Un movimiento puede tener múltiples máquinas.
+    - Cardinalidad: * - *
+
+18. **Empleados_Obra - Movimientos**
+    - Un empleado de obra puede gestionar múltiples movimientos.
+    - Un movimiento tiene un único empleado de obra.
+    - Cardinalidad: 1 - *
+
+19. **Empleados_Depositos - Movimientos**
+    - Un empleado de depósito puede gestionar múltiples movimientos.
+    - Un movimiento tiene un único empleado de depósito.
+    - Cardinalidad: 1 - *
+
+20. **Autorizaciones - Movimientos**
+    - Una autorización puede estar asociada a múltiples movimientos.
+    - Un movimiento tiene una única autorización.
+    - Cardinalidad: 1 - *
+
+21. **Solicitudes - Pedidos_Compras**
+    - Una solicitud puede generar múltiples pedidos de compras.
+    - Un pedido de compras pertenece a una única solicitud.
+    - Cardinalidad: 1 - *
+
+22. **Materiales - Pedidos_Compras**
+    - Un material puede estar en múltiples pedidos de compras.
+    - Un pedido de compras puede contener múltiples materiales.
+    - Cardinalidad: * - *
+
+23. **Empleados_Compras - Pedidos_Compras**
+    - Un empleado de compras puede gestionar múltiples pedidos de compras.
+    - Un pedido de compras tiene un único empleado de compras.
+    - Cardinalidad: 1 - *
 
 ## Funcionalidades del Sistema
 
