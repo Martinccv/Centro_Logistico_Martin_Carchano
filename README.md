@@ -33,7 +33,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - **ID_Material** (PK)
 - Nombre
 - Descripción
-- Cantidad
+- Unidad
 - ID_Proveedor (FK)
 
 ### Máquinas
