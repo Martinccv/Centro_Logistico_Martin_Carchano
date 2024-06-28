@@ -21,7 +21,7 @@ CREATE TABLE Materiales (
     ID_Material INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Descripcion TEXT,
-    Cantidad INT DEFAULT 0,
+    Unidad VARCHAR(10),
     ID_Proveedor INT
 );
 
