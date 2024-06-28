@@ -73,7 +73,7 @@ CREATE TABLE Obras (
     Cantidad INT DEFAULT 0
 );
 
-CREATE TABLE Deposito (
+CREATE TABLE Depositos (
     ID_Deposito INT AUTO_INCREMENT PRIMARY KEY,
     ID_Material INT,
     ID_Maquina INT,
@@ -96,7 +96,10 @@ CREATE TABLE Solicitudes (
     Estado ENUM('Pendiente', 'Parcial', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
     ID_Material INT,
     ID_Maquina INT,
-    ID_Proveedor INT
+    Cantidad INT DEFAULT 0,
+    ID_Proveedor INT,
+    ID_Obra INT,
+    ID_Deposito INT
 );
 
 CREATE TABLE Autorizaciones (
@@ -111,6 +114,7 @@ CREATE TABLE Movimientos (
     ID_Movimiento INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATE,
     Tipo ENUM('Entrada', 'Salida', 'Transferencia') NOT NULL,
+    ID_Deposito INT,
     ID_Obra_Origen INT,
     ID_Obra_Destino INT,
     ID_Material INT,
@@ -151,7 +155,7 @@ FOREIGN KEY (ID_Material) REFERENCES Materiales(ID_Material),
 ADD CONSTRAINT FK_Maquina_Obras
 FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina);
 
-ALTER TABLE Deposito
+ALTER TABLE Depositos
 ADD CONSTRAINT FK_Material_Deposito
 FOREIGN KEY (ID_Material) REFERENCES Materiales(ID_Material),
 ADD CONSTRAINT FK_Maquina_Deposito
@@ -159,7 +163,7 @@ FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina);
 
 ALTER TABLE Empleados_Depositos 
 ADD CONSTRAINT FK_Deposito_Empleado
-FOREIGN KEY (ID_Deposito) REFERENCES Deposito(ID_Deposito);
+FOREIGN KEY (ID_Deposito) REFERENCES Depositos(ID_Deposito);
 
 ALTER TABLE Solicitudes
 ADD CONSTRAINT FK_Cliente_Solicitudes
@@ -173,7 +177,11 @@ FOREIGN KEY (ID_Material) REFERENCES Materiales(ID_Material),
 ADD CONSTRAINT FK_Maquina_Solicitudes
 FOREIGN KEY (ID_Maquina) REFERENCES Maquinas(ID_Maquina),
 ADD CONSTRAINT FK_Proveedor_Solicitudes
-FOREIGN KEY (ID_Proveedor) REFERENCES Proveedores(ID_Proveedor);
+FOREIGN KEY (ID_Proveedor) REFERENCES Proveedores(ID_Proveedor),
+ADD CONSTRAINT FK_Depositos_Solicitudes
+FOREIGN KEY (ID_Deposito) REFERENCES Depositos (ID_Deposito),
+ADD CONSTRAINT FK_Obras_Solicitudes
+FOREIGN KEY (ID_Obra) REFERENCES Obras(ID_Obra);
 
 ALTER TABLE Autorizaciones
 ADD CONSTRAINT FK_Solicitud_Autorizaciones
@@ -182,6 +190,8 @@ ADD CONSTRAINT FK_Socio_Gerente_Autorizaciones
 FOREIGN KEY (ID_Socio_Gerente) REFERENCES Socios_Gerentes(ID_Socio_Gerente);
 
 ALTER TABLE Movimientos
+ADD CONSTRAINT FK_Deposito_Movimientos
+FOREIGN KEY (ID_Deposito) REFERENCES Depositos (ID_Deposito),
 ADD CONSTRAINT FK_Obra_Origen_Movimientos
 FOREIGN KEY (ID_Obra_Origen) REFERENCES Obras(ID_Obra),
 ADD CONSTRAINT FK_Obra_Destino_Movimientos
