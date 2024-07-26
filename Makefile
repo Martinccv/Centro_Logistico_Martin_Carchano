@@ -10,8 +10,8 @@ DATABASE=${MYSQL_DATABASE}
 USER=${MYSQL_USER}
 
 DOCKER_COMPOSE_FILE=./docker-compose.yml
-DATABASE_CREATION=./sql_project/database_structure.sql
-DATABASE_POPULATION=./sql_project/population.sql
+DATABASE_CREATION=./Proyecto_centro_logistico/Estructura_db.sql
+DATABASE_POPULATION=./Proyecto_centro_logistico/population.sql
 
 FILES=vistas funciones stored_procedures triggers
 
