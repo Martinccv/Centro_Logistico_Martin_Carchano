@@ -1,4 +1,11 @@
-USE my_database_change_me;
+USE CentroLogistico;
 
--- IMPORTANTE PARA QUE ENTIENDA QUE DEBE HACER LA IMPORTACION
 SET GLOBAL local_infile = true;
+
+LOAD DATA INFILE '/path/to/Proveedores.csv'
+INTO TABLE Proveedores
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(ID_Proveedor, Nombre, Direccion, Telefono, Rubro);
