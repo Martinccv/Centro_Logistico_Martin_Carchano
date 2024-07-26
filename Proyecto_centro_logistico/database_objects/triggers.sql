@@ -1,20 +1,21 @@
 USE CentroLogistico;
 
 -- Audita los movimientos realizados en la tabla Movimientos.
-CREATE TRIGGER trg_AuditarMovimientos
-ON Movimientos
-AFTER INSERT, UPDATE, DELETE
-AS
-BEGIN
+-- CREATE TRIGGER trg_AuditarMovimientos
+-- AFTER INSERT, UPDATE, DELETE ON Movimientos
+-- AS
+--  -BEGIN
     -- Código para auditar cambios en la tabla Movimientos
     -- Ejemplo: Insertar datos en una tabla de auditoría
-END;
+-- END;
 
 -- Actualiza el stock de materiales en los depósitos cuando se aprueba una solicitud.
+DROP TRIGGER IF EXISTS trg_ActualizarStockMateriales;
+
+DELIMITER //
 CREATE TRIGGER trg_ActualizarStockMateriales
-ON Solicitudes
-AFTER UPDATE
-AS
+AFTER UPDATE ON Solicitudes
+FOR EACH ROW
 BEGIN
     IF UPDATE(Estado)
     BEGIN
@@ -29,4 +30,6 @@ BEGIN
             WHERE ID_Deposito = @ID_Deposito AND ID_Material = @ID_Material;
         END
     END
-END;
+END; //
+
+DELIMITER ;

@@ -1,6 +1,8 @@
 USE CentroLogistico;
 
 -- Lista de solicitudes pendientes de aprobación.
+DROP VIEW IF EXISTS vw_SolicitudesPendientes;
+
 CREATE VIEW vw_SolicitudesPendientes AS
 SELECT s.ID_Solicitud, c.Nombre AS Cliente, e.Nombre AS Empleado, s.Tipo, s.Estado
 FROM Solicitudes s
@@ -9,6 +11,8 @@ LEFT JOIN Empleados_Obra e ON s.ID_Empleado_Obra = e.ID_Empleado_Obra
 WHERE s.Estado = 'Pendiente';
 
 -- Muestra los materiales disponibles en cada depósito
+DROP VIEW IF EXISTS vw_MaterialesDisponibles;
+
 CREATE VIEW vw_MaterialesDisponibles AS
 SELECT d.ID_Deposito, m.Nombre AS Material, d.Cantidad
 FROM Depositos d

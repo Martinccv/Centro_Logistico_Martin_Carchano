@@ -40,12 +40,12 @@ objects:
 	@echo "Create objects in database"
 	@for file in $(FILES); do \
 	    echo "Process $$file and add to the database: $(DATABASE_NAME)"; \
-	docker exec -it $(SERVICE_NAME)  mysql -u$(MYSQL_USER) -p$(PASSWORD) -e "source ./sql_project/database_objects/$$file.sql"; \
+	docker exec -it $(SERVICE_NAME)  mysql -u$(MYSQL_USER) -p$(PASSWORD) -e "source ./Proyecto_centro_logistico/database_objects/$$file.sql"; \
 	done
 
 test-db:
 	@echo "Testing the tables"
-	docker exec -it $(SERVICE_NAME)  mysql -u$(MYSQL_USER) -p$(PASSWORD)  -e "source ./sql_project/check_db_objects.sql";
+	docker exec -it $(SERVICE_NAME)  mysql -u$(MYSQL_USER) -p$(PASSWORD)  -e "source ./Proyecto_centro_logistico/check_db_objects.sql";
 
 access-db:
 	@echo "Access to db-client"

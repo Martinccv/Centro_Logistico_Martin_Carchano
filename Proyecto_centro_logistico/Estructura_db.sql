@@ -1,3 +1,4 @@
+
 -- Eliminar base de dato con el mismo nombre si existe
 
 DROP DATABASE IF EXISTS CentroLogistico ;
@@ -36,7 +37,7 @@ CREATE TABLE Maquinas (
 CREATE TABLE Clientes (
     ID_Cliente INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
-    Dirección VARCHAR(255),
+    Direccion VARCHAR(255),
     Telefono VARCHAR(20)
 );
 
