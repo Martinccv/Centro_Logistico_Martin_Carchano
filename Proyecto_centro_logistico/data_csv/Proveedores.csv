@@ -1,21 +1,21 @@
-ID_Proveedor,Nombre,Direccion,Telefono,Rubro
-1,Proveedor A,"1743 Brian Plains
+Nombre,Direccion,Telefono,Rubro
+Proveedor A,"1743 Brian Plains
 Lake Douglasland, WV 15563",(402)592-0513x5398,Rubro B
-2,Proveedor B,"59653 Johnson Burgs Suite 613
+Proveedor B,"59653 Johnson Burgs Suite 613
 West Danahaven, MA 39108",001-460-344-6529x637,Rubro C
-3,Proveedor C,"0150 Morris Oval Apt. 608
+Proveedor C,"0150 Morris Oval Apt. 608
 Port Michaelview, SD 33529",(795)981-1799,Rubro D
-4,Proveedor D,"154 Amy Vista
+Proveedor D,"154 Amy Vista
 West Brandon, MT 12088",309.800.0122,Rubro E
-5,Proveedor E,"753 Jennifer Shores Apt. 015
+Proveedor E,"753 Jennifer Shores Apt. 015
 New Marybury, MT 90447",832-523-9056x42098,Rubro F
-6,Proveedor F,"556 Dixon Trafficway Apt. 365
+Proveedor F,"556 Dixon Trafficway Apt. 365
 Gabriellebury, MD 36971",561-627-6860,Rubro G
-7,Proveedor G,"60310 Gloria Roads
+Proveedor G,"60310 Gloria Roads
 West Jameston, WV 83133",655-838-6468x0177,Rubro H
-8,Proveedor H,"USS Nash
+Proveedor H,"USS Nash
 FPO AE 67397",001-613-667-0130x700,Rubro I
-9,Proveedor I,"6525 Ramirez Ramp Apt. 523
+Proveedor I,"6525 Ramirez Ramp Apt. 523
 New Joseph, TX 55717",377-521-6514x762,Rubro J
-10,Proveedor J,"3486 Morgan Port
+Proveedor J,"3486 Morgan Port
 Lake Gregoryhaven, WV 29571",+1-984-919-9032x48238,Rubro K
