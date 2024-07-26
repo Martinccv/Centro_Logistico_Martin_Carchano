@@ -1,21 +1,23 @@
-ID_Obra,Nombre,Direccion,Estado,ID_Material,ID_Maquina,Costo
-1,Obra A,"3064 Harper Creek
-South Bethanyberg, AK 91038",Finalizada,7,2,92
-2,Obra B,"PSC 3711, Box 6124
-APO AP 63176",En construcción,9,8,59
-3,Obra C,"2058 Amber Forge
-Greenemouth, VA 06070",Finalizada,6,10,30
-4,Obra D,"38190 Sandra Fork
-Port Jennifer, GU 23605",En construcción,2,7,96
-5,Obra E,"713 Powell Key Suite 304
-North Regina, AL 75859",En construcción,4,7,73
-6,Obra F,"135 Elizabeth Street Suite 081
-Meaganside, AS 69997",En construcción,10,9,66
-7,Obra G,"0978 Eric Pine Apt. 909
-Fisherton, HI 83196",En construcción,4,1,4
-8,Obra H,"741 Davis Oval Suite 066
-Port Candace, ND 04634",Finalizada,4,9,74
-9,Obra I,"0945 Tyler Forks
-Hendrixville, IA 73534",Finalizada,1,8,46
-10,Obra J,"445 Hebert Hills
-West Heatherstad, NC 06681",En construcción,5,2,91
+Nombre,Direccion,Estado,ID_Material,ID_Maquina,Costo
+Obra A,"3064 Harper Creek South Bethanyberg AK 91038",Finalizada,7,2,92
+Obra B,"PSC 3711, Box 6124 APO AP 63176",En construcción,9,8,59
+Obra C,"2058 Amber Forge Greenemouth VA 06070",Finalizada,6,10,30
+Obra D,"38190 Sandra Fork Port Jennifer GU 23605",En construcción,2,7,96
+Obra E,"713 Powell Key Suite 304 North Regina AL 75859",En construcción,4,7,73
+Obra F,"135 Elizabeth Street Suite 081 Meaganside AS 69997",En construcción,10,9,66
+Obra G,"0978 Eric Pine Apt. 909 Fisherton HI 83196",En construcción,4,1,4
+Obra H,"741 Davis Oval Suite 066 Port Candace ND 04634",Finalizada,4,9,74
+Obra I,"0945 Tyler Forks Hendrixville IA 73534",Finalizada,1,8,46
+Obra J,"445 Hebert Hills West Heatherstad NC 06681",En construcción,5,2,91
+Obra b,"377 Rachel Square Pattersonview KS 61985",Finalizada,20,3,57
+Obra c,"Unit 6949 Box 9882 DPO AA 12532",En construcción,11,31,100
+Obra d,"9912 Williams Spring Suite 678 New Jonathonchester WV 46059",Finalizada,3,12,35
+Obra e,"PSC 5179, Box 8865 APO AA 42467",En construcción,36,37,29
+Obra f,"1341 Werner View Roberthaven NE 28490",Finalizada,18,42,90
+Obra g,"2079 Johnson Run Fostermouth TN 77090",En construcción,47,29,56
+Obra h,"6193 Anderson Ridge Suite 557 Blackborough CT 96058",En construcción,6,50,89
+Obra i,"778 Jorge Prairie Apt. 398 West Danielfurt AS 41100",En construcción,41,4,55
+Obra j,"138 Stevenson Court Bendershire FL 54968",Finalizada,22,25,14
+Obra k,"2127 Mallory Knoll Suite 897 Lake Sandrafort AR 07789",Finalizada,27,40,40
+Obra l,"462 Jodi Wells Apt. 090 North Michaelstad AK 74840",En construcción,18,34,37
+Obra m,"48197 Hill Oval Rogersborough VT 13155",Finalizada,1,37,9
