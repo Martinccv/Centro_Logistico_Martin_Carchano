@@ -1,0 +1,21 @@
+ID_Obra,Nombre,Direccion,Estado,ID_Material,ID_Maquina,Costo
+1,Obra A,"3064 Harper Creek
+South Bethanyberg, AK 91038",Finalizada,7,2,92
+2,Obra B,"PSC 3711, Box 6124
+APO AP 63176",En construcción,9,8,59
+3,Obra C,"2058 Amber Forge
+Greenemouth, VA 06070",Finalizada,6,10,30
+4,Obra D,"38190 Sandra Fork
+Port Jennifer, GU 23605",En construcción,2,7,96
+5,Obra E,"713 Powell Key Suite 304
+North Regina, AL 75859",En construcción,4,7,73
+6,Obra F,"135 Elizabeth Street Suite 081
+Meaganside, AS 69997",En construcción,10,9,66
+7,Obra G,"0978 Eric Pine Apt. 909
+Fisherton, HI 83196",En construcción,4,1,4
+8,Obra H,"741 Davis Oval Suite 066
+Port Candace, ND 04634",Finalizada,4,9,74
+9,Obra I,"0945 Tyler Forks
+Hendrixville, IA 73534",Finalizada,1,8,46
+10,Obra J,"445 Hebert Hills
+West Heatherstad, NC 06681",En construcción,5,2,91
