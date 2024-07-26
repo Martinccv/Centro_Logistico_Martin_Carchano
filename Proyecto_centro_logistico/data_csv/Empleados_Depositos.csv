@@ -1,11 +1,7 @@
-ID_Empleado_Deposito,Nombre,Cargo,Telefono,ID_Deposito
-1,Victoria Bennett,Encargado,(920)976-3463x669,10
-2,John Briggs,Encargado,+1-278-661-7001x442,4
-3,Lynn Clayton,Asistente,822-361-4986x28420,3
-4,Jill Wood,Encargado,+1-495-382-9482x730,8
-5,Dr. Paul Mercer,Asistente,6742642188,4
-6,Kathryn Thomas,Asistente,+1-394-223-3776x90958,9
-7,Amy Parker,Asistente,279.301.6145x169,1
-8,Edward Phillips,Encargado,001-760-555-8612x75876,5
-9,Mary Williams,Encargado,(220)624-8503x456,6
-10,Michelle Sutton,Asistente,382.513.6485x642,1
+Nombre,Cargo,Telefono,ID_Deposito
+Victoria Bennett,Encargado,(920)976-3463x669,1
+John Briggs,Encargado,+1-278-661-7001x442,2
+Lynn Clayton,Asistente,822-361-4986x28420,2
+Jill Wood,Encargado,+1-495-382-9482x730,3
+Dr. Paul Mercer,Asistente,6742642188,3
+
