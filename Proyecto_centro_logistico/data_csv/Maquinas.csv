@@ -1,20 +1,51 @@
 Nombre,Descripcion,Estado,ID_Proveedor
-Amoladora GWS 28-230,Amoladora marca Bosch de 9 pulg,Operativa,3
-Amoladora GWS 25-180,Amoladora marca Bosch de 7 pulg,Operativa,8
-Amoladora GWS 9-125,Amoladora marca Bosch de 5 pulg,En reparación,10
-Amoladora GWS 180-Li,Amoladora a bateria marca Bosch de 5 pulg,En reparación,2
-Sierra circular GKS150,Sierra de mano circular marca Bosch de 7.5 pulg,Fuera de servicio,6
-Vibrador concreto GCV 22,Vibrador de hormigon marca Bosch con manguera,Operativa,7
-Taladro GSB 13,Taladro percutor marca Bosch de 700W,Fuera de servicio,8
-Martillo electrico T3000,Martillo electrico marca Hilti de 50J,En reparación,6
-Martillo electrico T1100,Martillo electrico marca Hilti de 26J,Operativa,6
-Martillo electrico T1100,Martillo electrico marca Hilti de 26J,En reparación,6
-Amoladora GWS 28-230,Amoladora marca Bosch de 9 pulg,Operativa,3
-Amoladora GWS 28-230,Amoladora marca Bosch de 9 pulg,Operativa,3
-Taladro GSB 13,Taladro percutor marca Bosch de 700W,Operativa,8
-Taladro GSB 13,Taladro percutor marca Bosch de 700W,Operativa,8
-Autoelevador CDC 3.5, Autoelevador marca Heli de capacidad 3.5Tn, Operativa,11
-Cargadora LW300F, Cargadora frontal marca XCMG LW300F,Operativa,11
-Retroexcavadora 580SN, Retroexcavadora marca CASE modelo 580SN,Operativa,12
-Motocompresor 185Q, Motocompresor marca Sullair modelo 185Q de 7kg/m2,Fuera de servicio,13
-Hormigonera 300L, Hormigonera de 300 litros marca SORRENTO,En reparación,8
+Excavadora,Excavadora de orugas para movimiento de tierra,Operativa,9
+Bulldozer,Bulldozer para nivelación de terreno,Operativa,12
+Retroexcavadora,Retroexcavadora con pala y cubo,Operativa,6
+Grúa,Grúa móvil para levantamiento de cargas,Operativa,16
+Cargadora,Cargadora frontal para carga y descarga,Operativa,20
+Pala mecánica,Pala mecánica para excavación,Operativa,11
+Compactadora,Compactadora para suelo y asfalto,Operativa,5
+Mezcladora,Mezcladora de cemento para mezclas,Operativa,18
+Generador,Generador eléctrico para suministro de energía,Operativa,3
+Compresora,Compresora de aire para herramientas neumáticas,Operativa,8
+Taladro,Conjunto de taladros para perforación,Operativa,10
+Soldadora,Soldadora eléctrica para metal,Operativa,15
+Pulidora,Pulidora para acabados en metal,Operativa,17
+Sierra,Sierra circular para corte de madera,Operativa,2
+Cortadora de concreto,Cortadora de concreto para pavimentos,Operativa,14
+Rodillo,Rodillo para compactación de asfalto,Operativa,19
+Desbrozadora,Desbrozadora para vegetación,Operativa,4
+Escavadora,Escavadora de brazo largo para zanjas,Operativa,13
+Compresor,Compresor de tornillo para construcción,Operativa,7
+Grúa torre,Grúa torre para edificios altos,Operativa,11
+Motoniveladora,Motoniveladora para nivelación de carreteras,Operativa,12
+Perforadora,Perforadora de suelo para pilotes,Operativa,8
+Trituradora,Trituradora de escombros para reciclaje,Operativa,9
+Mezcladora de asfalto,Mezcladora de asfalto para carreteras,Operativa,6
+Aspersora,Aspersora para aplicación de líquidos,Operativa,16
+Pulidora de pisos,Pulidora para pisos de concreto,Operativa,14
+Bombas de agua,Bombas para evacuación de agua,Operativa,19
+Motobomba,Motobomba para riego y drenaje,Operativa,20
+Equipo de soldadura,Equipo completo de soldadura,Operativa,21
+Cortadora de metal,Cortadora de metal para construcción,Operativa,10
+Barredora,Barredora para limpieza de superficies,Operativa,22
+Compresora de aire,Compresora de aire portátil,Operativa,5
+Herramientas eléctricas,Conjunto de herramientas eléctricas,Operativa,18
+Generador portátil,Generador portátil para pequeñas obras,Operativa,23
+Sierra de banda,Sierra de banda para madera,Operativa,7
+Cinta transportadora,Cinta transportadora para materiales,Operativa,2
+Móvil de grúas,Unidad móvil de grúas para transporte,Operativa,11
+Extractor de polvo,Extractor de polvo para talleres,Operativa,20
+Elevador de materiales,Elevador para transporte vertical,Operativa,17
+Plataforma elevadora,Plataforma para trabajos en altura,Operativa,22
+Sistema de riego,Sistema de riego para obras,Operativa,8
+Cortadora de asfalto,Cortadora especializada en asfalto,Operativa,12
+Trituradora de madera,Trituradora de madera para desechos,Operativa,14
+Pulverizador,Pulverizador para químicos,Operativa,19
+Camión de volteo,Camión para descarga de materiales,Operativa,4
+Rodillo de neumáticos,Rodillo para compactación con neumáticos,Operativa,16
+Hidrolavadora,Hidrolavadora para limpieza de superficies,Operativa,21
+Mezcladora de cemento,Mezcladora especializada en cemento,Operativa,15
+Camión grúa,Camión con grúa para carga y descarga,Operativa,13
+Cortadora de vidrio,Cortadora especializada en vidrio,Operativa,22

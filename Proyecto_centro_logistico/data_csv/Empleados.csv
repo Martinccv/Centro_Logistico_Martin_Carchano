@@ -1,0 +1,51 @@
+Nombre,Cargo,Telefono,ID_Centro,Tipo
+Juan Pérez,Jefe de Obra,1234567890,1,Obra
+Ana Gómez,Ingeniera Civil,2345678901,1,Obra
+Roberto Díaz,Supervisor,3456789012,1,Obra
+Maria Rodríguez,Obrero,4567890123,1,Obra
+Luis Fernández,Obrero,5678901234,1,Obra
+Carla Martínez,Jefe de Depósito,6789012345,6,Deposito
+Pedro López,Operador de Grúa,7890123456,6,Deposito
+Laura Sánchez,Auxiliar de Depósito,8901234567,6,Deposito
+José Morales,Jefe de Compras,9012345678,,Compras
+Patricia Gómez,Comprador,0123456789,,Compras
+Elena Fernández,Asistente de Compras,1234567890,,Compras
+Roberto Castro,Jefe de Obra,2345678901,10,Obra
+María López,Ingeniera de Proyecto,3456789012,10,Obra
+Alberto Martínez,Obrero,4567890123,10,Obra
+Claudia Rivas,Obrero,5678901234,10,Obra
+Ricardo Pérez,Jefe de Obra,6789012345,11,Obra
+Andrea Díaz,Ingeniera de Proyecto,7890123456,11,Obra
+Antonio Gómez,Supervisor,8901234567,11,Obra
+Mónica Ramírez,Obrero,9012345678,11,Obra
+Andrés Vega,Obrero,0123456789,12,Obra
+Verónica Ruiz,Jefe de Depósito,1234567890,8,Deposito
+Santiago Torres,Operador de Grúa,2345678901,8,Deposito
+Laura González,Auxiliar de Depósito,3456789012,8,Deposito
+Martín Pérez,Jefe de Compras,4567890123,,Compras
+Isabel Sánchez,Comprador,5678901234,,Compras
+Daniela Castro,Asistente de Compras,6789012345,,Compras
+Claudia Herrera,Jefe de Obra,7890123456,14,Obra
+Óscar Morales,Ingeniero de Proyecto,8901234567,14,Obra
+Silvia López,Supervisor,9012345678,14,Obra
+Juan Ramírez,Obrero,0123456789,14,Obra
+Marta Gómez,Obrero,1234567890,15,Obra
+José Martínez,Jefe de Obra,2345678901,15,Obra
+Laura Fernández,Ingeniera de Proyecto,3456789012,15,Obra
+Daniela Rivas,Supervisor,4567890123,15,Obra
+Óscar Díaz,Obrero,5678901234,15,Obra
+Claudia Vargas,Jefe de Depósito,6789012345,16,Deposito
+Emilio Romero,Operador de Grúa,7890123456,16,Deposito
+Verónica Martínez,Auxiliar de Depósito,8901234567,16,Deposito
+Juan Fernández,Jefe de Compras,9012345678,,Compras
+Patricia López,Comprador,0123456789,,Compras
+Andrés Ruiz,Asistente de Compras,1234567890,,Compras
+María Sánchez,Jefe de Obra,2345678901,18,Obra
+Pedro Gómez,Ingeniero de Proyecto,3456789012,18,Obra
+Claudia Díaz,Supervisor,4567890123,18,Obra
+Luis López,Obrero,5678901234,18,Obra
+Andrés Martínez,Obrero,6789012345,19,Obra
+Mariana Ramírez,Jefe de Obra,7890123456,19,Obra
+José Morales,Ingeniero de Proyecto,8901234567,19,Obra
+Sofía Castro,Supervisor,9012345678,19,Obra
+Ricardo Fernández,Obrero,0123456789,19,Obra

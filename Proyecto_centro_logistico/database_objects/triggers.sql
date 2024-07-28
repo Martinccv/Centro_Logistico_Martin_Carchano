@@ -1,6 +1,8 @@
 USE CentroLogistico;
 
 -- Validar los estados de solicitud
+DROP TRIGGER IF EXISTS validar_estado_solicitud;
+DELIMITER //
 CREATE TRIGGER validar_estado_solicitud
 BEFORE INSERT ON Autorizaciones
 FOR EACH ROW

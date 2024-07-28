@@ -34,45 +34,21 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (Nombre, Direccion, Telefono);
 
--- Empleado_obra
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados_Obra.csv'
-INTO TABLE Empleados_Obra
+-- Empleados
+LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados.csv'
+INTO TABLE Empleados
 FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(Nombre, Cargo, Telefono, ID_Obra);
+(Nombre,Cargo,Telefono,ID_Centro,Tipo);
 
--- Empleado_deposito
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados_Depositos.csv'
-INTO TABLE Empleados_Depositos
+-- Centros
+LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Centros.csv'
+INTO TABLE Centros
 FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(Nombre, Cargo, Telefono, ID_Deposito);
-
--- Emplado_compras
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados_Compras.csv'
-INTO TABLE Empleados_Compras
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(Nombre, Cargo, Telefono);
-
--- Obras
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Obras.csv'
-INTO TABLE Obras
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(Nombre, Direccion, Estado, ID_Material, ID_Maquina, Cantidad);
-
--- Depositos
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Depositos.csv'
-INTO TABLE Depositos
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(ID_Material, ID_Maquina, Cantidad);
+(Nombre,Direccion,Tipo);
 
 -- Socios_gerentes 
 LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Socios_Gerentes.csv'
@@ -83,33 +59,33 @@ IGNORE 1 LINES
 (Nombre, Telefono);
 
 -- Solicitudes
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Solicitudes.csv'
-INTO TABLE Solicitudes
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(Fecha, Tipo, ID_Cliente, ID_Empleado_Obra, ID_Empleado_Deposito, Estado, ID_Material, ID_Maquina, Cantidad, ID_Proveedor, ID_Obra, ID_Deposito);
+-- LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Solicitudes.csv'
+-- INTO TABLE Solicitudes
+-- FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 LINES
+-- (Fecha, Tipo, ID_Cliente, ID_Empleado_Obra, ID_Empleado_Deposito, Estado, ID_Material, ID_Maquina, Cantidad, ID_Proveedor, ID_Obra, ID_Deposito);
 
 -- Autorizaciones
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Autorizaciones.csv'
-INTO TABLE Autorizaciones
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(ID_Solicitud, ID_Socio_Gerente, Estado, Fecha);
+-- LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Autorizaciones.csv'
+-- INTO TABLE Autorizaciones
+-- FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 LINES
+-- ( ID_Solicitud, ID_Socio_Gerente, Estado, Fecha);
 
 -- Movimientos
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Movimientos.csv'
-INTO TABLE Movimientos
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(Fecha, Tipo, ID_Deposito, ID_Obra_Origen, ID_Obra_Destino, ID_Material, ID_Maquina, Cantidad, ID_Empleado_Obra, ID_Empleado_Deposito, ID_Autorizacion);
+-- LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Movimientos.csv'
+-- INTO TABLE Movimientos
+-- FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 LINES
+-- (Fecha, Tipo, ID_Deposito, ID_Obra_Origen, ID_Obra_Destino, ID_Material, ID_Maquina, Cantidad, ID_Empleado_Obra, ID_Empleado_Deposito, ID_Autorizacion);
 
 -- Pedido_compras
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Pedidos_Compras.csv'
-INTO TABLE Pedidos_Compras
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(ID_Solicitud, ID_Material, Cantidad_Pendiente, Fecha, ID_Empleado_Compras);
+-- LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Pedidos_Compras.csv'
+-- INTO TABLE Pedidos_Compras
+-- FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 LINES
+-- (ID_Solicitud, ID_Material, Cantidad_Pendiente, Fecha, ID_Empleado_Compras);

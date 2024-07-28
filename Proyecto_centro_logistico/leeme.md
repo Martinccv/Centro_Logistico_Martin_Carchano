@@ -1,6 +1,12 @@
 # Centro Logístico de Materiales y Máquinas
 Este documento proporciona una descripción completa de la base de datos del Centro Logístico de Materiales y Máquinas, diseñada para gestionar eficientemente el inventario, las solicitudes, movimientos y compras de materiales y máquinas entre diferentes centros de almacenamiento (obras y depósitos). Además, se incluyen las relaciones entre las tablas, así como los triggers, stored procedures, vistas y funciones que facilitan las operaciones diarias.
 
+## Diagrama Entidad-Relación
+
+El siguiente diagrama muestra el modelo de entidad-relación del sistema:
+
+<a href="https://miro.com/app/board/uXjVK4abNrw=/" target="_blank">Diagrama ER en Miro</a>
+
 ## Contenido
 ### Esquema de Base de Datos
 

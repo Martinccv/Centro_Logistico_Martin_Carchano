@@ -11,7 +11,8 @@ LEFT JOIN Empleados e ON s.ID_Empleado = e.ID_Empleado
 WHERE s.Estado = 'Pendiente';
 
 -- Muestra los materiales disponibles en un Centro en especifico
-DROP VIEW IF EXISTS Vista_Materiales_Centro
+DROP VIEW IF EXISTS Vista_Materiales_Centro;
+
 CREATE VIEW Vista_Materiales_Centro AS
 SELECT 
     C.Nombre AS Nombre_Centro,
@@ -24,10 +25,11 @@ JOIN
 JOIN 
     Materiales M ON AM.ID_Material = M.ID_Material
 WHERE
-    C.ID_Centro = @ID_Centro; -- Sustituir @ID_Centro por el identificador del centro deseado
+    C.ID_Centro = 1; -- Sustituir @ID_Centro por el identificador del centro deseado
 
 -- Muestra las maquinas disponibles en un Centro en especifico
 DROP VIEW IF EXISTS Vista_Maquinas_Centro;
+
 CREATE VIEW Vista_Maquinas_Centro AS
 SELECT 
     C.Nombre AS Nombre_Centro,
@@ -41,7 +43,7 @@ JOIN
 JOIN 
     Maquinas Maq ON AMQ.ID_Maquina = Maq.ID_Maquina
 WHERE
-    C.ID_Centro = @ID_Centro; -- Sustituir @ID_Centro por el identificador del centro deseado
+    C.ID_Centro = 1; -- Sustituir @ID_Centro por el identificador del centro deseado
 
 -- Vistas para Consultar Información de Movimientos
 DROP VIEW IF EXISTS Vista_Movimientos;

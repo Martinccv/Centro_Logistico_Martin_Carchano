@@ -1,20 +1,52 @@
 Nombre,Descripcion,Unidad,ID_Proveedor
-Cemento bolsa Holcim,Bolsa de cemento portland de 50kg marca Holcim,un,8
-Cemento alb bolsa Holcim,Bolsa de cemento de albañileria de 40kg marca Holcim,un,6
-Tirante 3x3 anchico,Tirante de madera de 3 pulg x 3 pulg x 10 m de anchico,un,1
-Fenolico 18,Fenolico de 1.22m x 2.44 m de 18mm de espesor ,un,10
-Clavos 2 1/2,bolsa de clavos de 2 1/2 pulg,kg,2
-Loseta de hormigón, loseta premoldeada de 40cm x 40cm ,m2,6
-Hierro torsionado de 6mm diametro, barra de hierro torsionada de 12 m de 6mm diametro,un,4
-Hierro torsionado de 8mm diametro,barra de hierro torsionada de 12 m de 8mm diametro,un,4
-Hierro torsionado de 10mm diametro,barra de hierro torsionada de 12 m de 10mm diametro,un,4
-Sikament R,Aditivo fluidificante para hormigon,lts,10
-Sikaporo plus, Aditivo espumigeno para hormigon,lts,10
-Hormigon H-17, Hormigon elaborado calidad H-17,m3,7
-Hormigon H-21, Hormigon elaborado calidad H-21,m3,7
-Viguetas 3m, viguetas premoldeadas de hormigon pretensadas de 3m largo,un,5
-Viguetas 4m, viguetas premoldeadas de hormigon pretensadas de 4m largo,un,5
-Viguetas 5m, viguetas premoldeadas de hormigon pretensadas de 5m largo,un,5
-Chapa sinusoidal T101, chapa sinusoidal formato T101 por metro,m,4
-Alambre negro N16, Alambre de hierro dulce calibre 16,kg,2
-Alambre negro N9, Alambre de hierro dulce calibre 9,kg,2
+Cemento,Cemento Portland para construcción,saco,7
+Arena,Arena de río para construcción,m3,12
+Ladrillos,Ladrillos cerámicos de 20x20x40 cm,unidad,5
+Vigas de acero,Vigas de acero estructural,metro,14
+Grava,Grava para mezcla de concreto,m3,8
+Piedra caliza,Piedra caliza para cimientos,m3,3
+Tubos PVC,Tubos de PVC para tuberías,metro,15
+Madera,Madera tratada para encofrado,m3,10
+Mortero,Mortero de mezcla para albañilería,saco,6
+Pegamento,Pegamento para cerámica,litro,20
+Yeso,Yeso para paredes y techos,saco,19
+Pintura,Pintura acrílica para interiores,litro,17
+Revestimiento,Revestimiento para fachadas,m2,13
+Aislante térmico,Aislante térmico para techos,m2,18
+Clavos,Clavos de acero para madera,kg,21
+Tornillos,Tornillos para construcción,kg,4
+Sellador,Sellador para juntas de expansión,litro,22
+Desinfectante,Desinfectante para superficies,litro,16
+Cinta adhesiva,Cinta adhesiva de 50 mm,rollo,24
+Alambre de acero,Alambre de acero para refuerzo,kg,11
+Piedra angular,Piedra angular para cimientos,m3,30
+Mallas de refuerzo,Mallas de acero para concreto,m2,9
+Sierra,Sierra para madera y metal,unidad,23
+Martillo,Martillo de construcción,unidad,31
+Cinta métrica,Cinta métrica de 5 metros,unidad,28
+Guantes,Guantes de trabajo,par,33
+Casco,Casco de seguridad,unidad,12
+Lentes,Lentes de seguridad,unidad,35
+Mascarilla,Mascarilla para polvo,unidad,25
+Botas,Botas de seguridad,par,26
+Escalera,Escalera de aluminio,unidad,7
+Nivel,Nivel de burbuja,unidad,8
+Paleta,Paleta para mezcla de cemento,unidad,32
+Alicate,Alicate de corte,unidad,13
+Destornillador,Destornillador de punta plana,unidad,27
+Cúter,Cúter de precisión,unidad,20
+Linterna,Linterna de trabajo,unidad,11
+Generador,Generador de electricidad,unidad,36
+Compresora,Compresora de aire,unidad,14
+Taladro,Taladro eléctrico,unidad,22
+Pistola de pintura,Pistola para pintar,unidad,37
+Mezcladora,Mezcladora de cemento,unidad,29
+Carretilla,Carretilla para transporte de materiales,unidad,5
+Cubo,Cubo de plástico para mezcla,unidad,7
+Brocha,Brocha para pintura,unidad,38
+Rodillo,Rodillo para pintura,unidad,39
+Paleta de albañil,Paleta de albañil,unidad,40
+Soplete,Soplete para soldadura,unidad,2
+Máquina de corte,Máquina de corte de concreto,unidad,6
+Pulidora,Pulidora para metal,unidad,15
+
