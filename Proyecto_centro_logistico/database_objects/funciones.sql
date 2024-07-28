@@ -13,8 +13,17 @@ BEGIN
 END; //
 DELIMITER ;
 
--- Calcula el total de materiales asignados a una obra específica
-DROP FUNCTION IF EXISTS fn_CalcularTotalMaterialesObra;
+-- verificar cantidad de materiales en todos los depositos
+CREATE FUNCTION TotalMateriales(ID_Material INT) 
+RETURNS INT
+BEGIN
+    DECLARE total INT;
+    SELECT SUM(Cantidad) INTO total FROM Almacenes_Materiales WHERE ID_Material = ID_Material;
+    RETURN total;
+END;
+
+-- Calcula el total de materiales asignados a una Centro en especifico
+DROP FUNCTION IF EXISTS fn_CalcularTotalMaterialesCentro;
 DELIMITER //
 CREATE FUNCTION fn_CalcularTotalMaterialesObra (@ID_Obra INT)
 RETURNS INT
@@ -22,8 +31,8 @@ AS
 BEGIN
     DECLARE @TotalMateriales INT;
     SELECT @TotalMateriales = SUM(Cantidad)
-    FROM Obras
-    WHERE ID_Obra = @ID_Obra;
+    FROM Centros
+    WHERE ID_Centro = @ID_Centro;
     RETURN @TotalMateriales;
 END; //
 DELIMITER ;
