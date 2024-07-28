@@ -103,6 +103,7 @@ END;
 
 DELIMITER ;
 
+-- Realizar un movimiento una vez tenga una solicitud aprobara
 DELIMITER //
 
 CREATE PROCEDURE RealizarMovimiento(
@@ -188,3 +189,69 @@ END;
 //
 
 DELIMITER ;
+
+--  generar pedido de compras desde una solicitud aprobada
+DELIMITER //
+
+CREATE PROCEDURE GenerarPedidoCompras(
+    IN ID_Solicitud INT,
+    IN ID_Empleado_Compras INT
+)
+BEGIN
+    DECLARE ID_Material INT;
+    DECLARE Cantidad_Solicitada INT;
+    DECLARE Cantidad_Disponible INT;
+    DECLARE Cantidad_Faltante INT;
+    DECLARE ID_Pedido INT;
+
+    -- Verificar si la solicitud está aprobada
+    IF (SELECT Estado FROM Solicitudes WHERE ID_Solicitud = ID_Solicitud) != 'Aprobada' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada';
+    END IF;
+
+    -- Crear el registro del pedido de compras
+    INSERT INTO Pedidos_Compras (ID_Solicitud, Fecha, ID_Empleado_Compras)
+    VALUES (ID_Solicitud, CURDATE(), ID_Empleado_Compras);
+
+    -- Obtener el ID del pedido de compras recién creado
+    SET ID_Pedido = LAST_INSERT_ID();
+
+    -- Iterar sobre los detalles de la solicitud aprobada
+    DECLARE cursor1 CURSOR FOR
+        SELECT ID_Material, Cantidad
+        FROM Detalle_Solicitudes
+        WHERE ID_Solicitud = ID_Solicitud
+          AND ID_Material IS NOT NULL;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND CLOSE cursor1;
+
+    OPEN cursor1;
+
+    read_loop: LOOP
+        FETCH cursor1 INTO ID_Material, Cantidad_Solicitada;
+
+        IF NOT (ID_Material IS NOT NULL) THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Obtener la cantidad disponible del material en todos los centros
+        SET Cantidad_Disponible = (SELECT SUM(Cantidad) FROM Almacenes_Materiales WHERE ID_Material = ID_Material);
+
+        -- Calcular la cantidad faltante
+        SET Cantidad_Faltante = Cantidad_Solicitada - IFNULL(Cantidad_Disponible, 0);
+
+        IF Cantidad_Faltante > 0 THEN
+            -- Insertar el detalle del pedido de compras para los materiales faltantes
+            INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
+            VALUES (ID_Pedido, ID_Material, Cantidad_Faltante);
+        END IF;
+
+    END LOOP;
+
+    CLOSE cursor1;
+
+END;
+//
+
+DELIMITER ;
+
