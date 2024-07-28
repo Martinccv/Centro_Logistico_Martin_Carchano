@@ -27,6 +27,7 @@ WHERE
     C.ID_Centro = @ID_Centro; -- Sustituir @ID_Centro por el identificador del centro deseado
 
 -- Muestra las maquinas disponibles en un Centro en especifico
+DROP VIEW IF EXISTS Vista_Maquinas_Centro;
 CREATE VIEW Vista_Maquinas_Centro AS
 SELECT 
     C.Nombre AS Nombre_Centro,
@@ -43,6 +44,7 @@ WHERE
     C.ID_Centro = @ID_Centro; -- Sustituir @ID_Centro por el identificador del centro deseado
 
 -- Vistas para Consultar Información de Movimientos
+DROP VIEW IF EXISTS Vista_Movimientos;
 CREATE VIEW Vista_Movimientos AS
 SELECT 
     M.ID_Movimiento,
@@ -71,6 +73,7 @@ LEFT JOIN
     Maquinas Maq ON DS.ID_Maquina = Maq.ID_Maquina;
 
 -- Vista para consultar informacion sobre Solicitudes
+DROP VIEW IF EXISTS Vista_Solicitudes;
 CREATE VIEW Vista_Solicitudes AS
 SELECT 
     S.ID_Solicitud,
