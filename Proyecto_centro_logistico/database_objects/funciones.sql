@@ -1,7 +1,5 @@
 USE CentroLogistico;
 
-USE CentroLogistico;
-
 -- Devuelve el estado de una máquina específica
 DROP FUNCTION IF EXISTS fn_ObtenerEstadoMaquina;
 
@@ -19,7 +17,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
 
 -- Verificar cantidad de materiales por centro
 DELIMITER //
@@ -63,8 +60,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
-
 
 -- Calcula el total de materiales asignados a una Centro en especifico
 DROP FUNCTION IF EXISTS ObtenerCantidadMaterialCentro;

@@ -214,6 +214,81 @@ Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material
 - Procedure para procesar una nueva solicitud.
 - Procedure para autorizar un movimiento.
 - Procedure para realizar un pedido de compra.
-### Vistas
-- Vista consolidada de inventario de materiales por centro.
-- Vista de estado de solicitudes.
+
+## Vistas
+### 1. Vista: vw_SolicitudesPendientes
+### Descripción:
+Muestra una lista de todas las solicitudes que están pendientes de aprobación. Incluye detalles sobre la solicitud, el cliente asociado y el empleado que la creó.
+
+### Campos:
+
+- ID_Solicitud: Identificador único de la solicitud.
+- Cliente: Nombre del cliente asociado a la solicitud.
+- Empleado: Nombre del empleado que creó la solicitud.
+- Tipo: Tipo de la solicitud (materiales, máquinas, etc.).
+- Estado: Estado actual de la solicitud (en este caso, debe ser 'Pendiente').
+### Uso:
+Esta vista es útil para los gestores y responsables que necesitan revisar y aprobar las solicitudes que están pendientes en el sistema.
+
+### 2. Vista: Vista_Materiales_Centro
+### Descripción:
+Muestra los materiales disponibles en un centro específico que está clasificado como depósito. Incluye el nombre del centro, el nombre del material y la cantidad disponible.
+
+### Campos:
+
+- Nombre_Centro: Nombre del centro donde están almacenados los materiales.
+- Nombre_Material: Nombre del material disponible.
+- Cantidad: Cantidad disponible del material en el centro.
+### Uso:
+Esta vista permite a los usuarios consultar rápidamente los materiales disponibles en centros clasificados como depósitos, facilitando la gestión de inventario y el seguimiento de existencias.
+
+### 3. Vista: Vista_Maquinas_Centro
+### Descripción:
+Muestra las máquinas disponibles en un centro específico clasificado como depósito. Incluye el nombre del centro, el nombre de la máquina, una breve descripción y el estado de la máquina.
+
+### Campos:
+
+- Nombre_Centro: Nombre del centro donde están almacenadas las máquinas.
+- Nombre_Maquina: Nombre de la máquina disponible.
+- Descripcion: Descripción de la máquina.
+- Estado: Estado actual de la máquina (por ejemplo, disponible, en reparación, etc.).
+### Uso:
+Esta vista es útil para consultar el inventario de máquinas en los centros de depósito, ayudando en la planificación y gestión de los recursos disponibles.
+
+### 4. Vista: Vista_Movimientos
+### Descripción:
+Proporciona información detallada sobre los movimientos de materiales y máquinas, incluyendo la fecha del movimiento, el tipo, el centro involucrado, el empleado responsable, y los detalles específicos del material o máquina movida.
+
+### Campos:
+
+- ID_Movimiento: Identificador único del movimiento.
+- Fecha: Fecha en que se realizó el movimiento.
+- Tipo: Tipo de movimiento (entrada, salida, traslado, etc.).
+- Nombre_Centro: Nombre del centro donde se realizó el movimiento.
+- Nombre_Empleado: Nombre del empleado que realizó el movimiento.
+- ID_Material: Identificador del material involucrado en el movimiento.
+- ID_Maquina: Identificador de la máquina involucrada en el movimiento.
+- Cantidad: Cantidad de material o máquinas movidas.
+- Nombre_Item: Nombre del material o máquina, dependiendo de cuál esté involucrado.
+### Uso:
+Esta vista es útil para hacer un seguimiento de todos los movimientos de inventario, facilitando la auditoría y el análisis de la gestión de recursos.
+
+### 5. Vista: Vista_Solicitudes
+### Descripción:
+Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo, cliente, empleado, centro asociado, y los detalles de los materiales y máquinas solicitados.
+
+### Campos:
+
+- ID_Solicitud: Identificador único de la solicitud.
+- Fecha: Fecha en que se realizó la solicitud.
+- Tipo: Tipo de solicitud (materiales, máquinas, etc.).
+- Nombre_Cliente: Nombre del cliente asociado a la solicitud.
+- Nombre_Empleado: Nombre del empleado que realizó la solicitud.
+- Nombre_Centro: Nombre del centro donde se requiere el material o máquina.
+- ID_Material: Identificador del material solicitado.
+- ID_Maquina: Identificador de la máquina solicitada.
+- Cantidad: Cantidad de material o máquinas solicitadas.
+- Nombre_Item: Nombre del material o máquina solicitado.
+- Estado: Estado actual de la solicitud.
+### Uso:
+Esta vista permite consultar la información detallada de todas las solicitudes en el sistema, facilitando el análisis y seguimiento de las mismas.
