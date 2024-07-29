@@ -216,7 +216,7 @@ Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material
 - Procedure para realizar un pedido de compra.
 
 ## Vistas
-### 1. Vista: vw_SolicitudesPendientes
+### 1. vw_SolicitudesPendientes
 ### Descripción:
 Muestra una lista de todas las solicitudes que están pendientes de aprobación. Incluye detalles sobre la solicitud, el cliente asociado y el empleado que la creó.
 
@@ -230,7 +230,7 @@ Muestra una lista de todas las solicitudes que están pendientes de aprobación.
 ### Uso:
 Esta vista es útil para los gestores y responsables que necesitan revisar y aprobar las solicitudes que están pendientes en el sistema.
 
-### 2. Vista: Vista_Materiales_Centro
+### 2. Vista_Materiales_Centro
 ### Descripción:
 Muestra los materiales disponibles en un centro específico que está clasificado como depósito. Incluye el nombre del centro, el nombre del material y la cantidad disponible.
 
@@ -242,7 +242,7 @@ Muestra los materiales disponibles en un centro específico que está clasificad
 ### Uso:
 Esta vista permite a los usuarios consultar rápidamente los materiales disponibles en centros clasificados como depósitos, facilitando la gestión de inventario y el seguimiento de existencias.
 
-### 3. Vista: Vista_Maquinas_Centro
+### 3. Vista_Maquinas_Centro
 ### Descripción:
 Muestra las máquinas disponibles en un centro específico clasificado como depósito. Incluye el nombre del centro, el nombre de la máquina, una breve descripción y el estado de la máquina.
 
@@ -255,7 +255,7 @@ Muestra las máquinas disponibles en un centro específico clasificado como dep�
 ### Uso:
 Esta vista es útil para consultar el inventario de máquinas en los centros de depósito, ayudando en la planificación y gestión de los recursos disponibles.
 
-### 4. Vista: Vista_Movimientos
+### 4. Vista_Movimientos
 ### Descripción:
 Proporciona información detallada sobre los movimientos de materiales y máquinas, incluyendo la fecha del movimiento, el tipo, el centro involucrado, el empleado responsable, y los detalles específicos del material o máquina movida.
 
@@ -273,7 +273,7 @@ Proporciona información detallada sobre los movimientos de materiales y máquin
 ### Uso:
 Esta vista es útil para hacer un seguimiento de todos los movimientos de inventario, facilitando la auditoría y el análisis de la gestión de recursos.
 
-### 5. Vista: Vista_Solicitudes
+### 5. Vista_Solicitudes
 ### Descripción:
 Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo, cliente, empleado, centro asociado, y los detalles de los materiales y máquinas solicitados.
 
