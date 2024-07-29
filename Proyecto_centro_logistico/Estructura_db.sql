@@ -87,13 +87,13 @@ CREATE TABLE Almacenes_Maquinas (
 -- Tabla de Solicitudes
 CREATE TABLE Solicitudes (
     ID_Solicitud INT AUTO_INCREMENT PRIMARY KEY,
-    Fecha DATE,
+    Fecha TIMESTAMP,
     Tipo ENUM('Material', 'Maquina') NOT NULL,
     ID_Cliente INT,
     ID_Empleado INT,
     Estado ENUM('Pendiente', 'Parcial', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
     ID_Proveedor INT,
-    ID_Centro INT
+    ID_Centro INT NOT NULL
 );
 
 -- Tabla de Detalle de Solicitudes
@@ -111,13 +111,13 @@ CREATE TABLE Autorizaciones (
     ID_Solicitud INT,
     ID_Socio_Gerente INT,
     Estado ENUM('Aprobada', 'Rechazada', 'Pendiente') DEFAULT 'Pendiente',
-    Fecha DATE
+    Fecha TIMESTAMP
 );
 
 -- Tabla de Movimientos
 CREATE TABLE Movimientos (
     ID_Movimiento INT AUTO_INCREMENT PRIMARY KEY,
-    Fecha DATE,
+    Fecha TIMESTAMP,
     Tipo ENUM('Entrada', 'Salida', 'Transferencia') NOT NULL,
     ID_Empleado INT,
     ID_Autorizacion INT
@@ -138,7 +138,7 @@ CREATE TABLE Detalle_Movimientos (
 CREATE TABLE Pedidos_Compras (
     ID_Pedido INT AUTO_INCREMENT PRIMARY KEY,
     ID_Solicitud INT,
-    Fecha DATE,
+    Fecha TIMESTAMP,
     ID_Empleado_Compras INT
 );
 
