@@ -262,18 +262,10 @@ CREATE PROCEDURE RealizarMovimiento(
     IN p_ID_Centro_Origen INT
 )
 BEGIN
+    DECLARE v_ID_Centro_Destino INT;
     DECLARE v_Tipo ENUM('Material', 'Maquina');
-    DECLARE v_ID_Material INT;
-    DECLARE v_ID_Maquina INT;
     DECLARE v_Cantidad INT;
     DECLARE v_ID_Movimiento INT;
-    DECLARE v_ID_Centro_Destino INT;
-    DECLARE v_ID_Almacen_Material_Origen INT;
-    DECLARE v_ID_Almacen_Material_Destino INT;
-    DECLARE v_ID_Almacen_Maquina_Origen INT;
-    DECLARE v_ID_Almacen_Maquina_Destino INT;
-
-    DECLARE done INT DEFAULT 0;
 
     -- Obtener el centro de destino de la solicitud
     SELECT ID_Centro INTO v_ID_Centro_Destino
@@ -292,65 +284,59 @@ BEGIN
     -- Obtener el ID del movimiento recién creado
     SET v_ID_Movimiento = LAST_INSERT_ID();
 
-    -- Declarar el cursor para los detalles de la solicitud
-    DECLARE cursor2 CURSOR FOR
-        SELECT Tipo, ID_Material, ID_Maquina, Cantidad
-        FROM Detalle_Solicitudes
-        WHERE ID_Solicitud = p_ID_Solicitud;
+    -- Procesar los materiales
+    INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Material, Cantidad)
+    SELECT 
+        v_ID_Movimiento,
+        am_origen.ID_Almacen_Material AS ID_Almacen_Origen,
+        am_destino.ID_Almacen_Material AS ID_Almacen_Destino,
+        ds.ID_Material,
+        ds.Cantidad
+    FROM Detalle_Solicitudes ds
+    JOIN Almacenes_Materiales am_origen ON am_origen.ID_Centro = p_ID_Centro_Origen AND am_origen.ID_Material = ds.ID_Material
+    LEFT JOIN Almacenes_Materiales am_destino ON am_destino.ID_Centro = v_ID_Centro_Destino AND am_destino.ID_Material = ds.ID_Material
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Material';
 
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    -- Actualizar el stock de materiales en el centro de origen y destino
+    UPDATE Almacenes_Materiales am
+    JOIN Detalle_Solicitudes ds ON am.ID_Centro = p_ID_Centro_Origen AND am.ID_Material = ds.ID_Material
+    SET am.Cantidad = am.Cantidad - ds.Cantidad
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Material';
 
-    OPEN cursor2;
+    INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+    SELECT v_ID_Centro_Destino, ds.ID_Material, ds.Cantidad
+    FROM Detalle_Solicitudes ds
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Material'
+    ON DUPLICATE KEY UPDATE Cantidad = Cantidad + VALUES(Cantidad);
 
-    read_loop: LOOP
-        FETCH cursor2 INTO v_Tipo, v_ID_Material, v_ID_Maquina, v_Cantidad;
+    -- Procesar las máquinas
+    DELETE am
+    FROM Almacenes_Maquinas am
+    JOIN Detalle_Solicitudes ds ON am.ID_Centro = p_ID_Centro_Origen AND am.ID_Maquina = ds.ID_Maquina
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Maquina';
 
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
+    INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
+    SELECT v_ID_Centro_Destino, ds.ID_Maquina
+    FROM Detalle_Solicitudes ds
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Maquina';
 
-        IF v_Tipo = 'Material' THEN
-            -- Procesar materiales
-            -- Actualizar stock en el centro de origen y destino
-            UPDATE Almacenes_Materiales
-            SET Cantidad = Cantidad - v_Cantidad
-            WHERE ID_Centro = p_ID_Centro_Origen
-            AND ID_Material = v_ID_Material;
-
-            INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
-            VALUES (v_ID_Centro_Destino, v_ID_Material, v_Cantidad)
-            ON DUPLICATE KEY UPDATE Cantidad = Cantidad + v_Cantidad;
-
-            -- Obtener los IDs de los almacenes
-            SET v_ID_Almacen_Material_Origen = (SELECT ID_Almacen_Material FROM Almacenes_Materiales WHERE ID_Centro = p_ID_Centro_Origen AND ID_Material = v_ID_Material);
-            SET v_ID_Almacen_Material_Destino = (SELECT ID_Almacen_Material FROM Almacenes_Materiales WHERE ID_Centro = v_ID_Centro_Destino AND ID_Material = v_ID_Material);
-
-            -- Registrar el detalle del movimiento
-            INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Material, Cantidad)
-            VALUES (v_ID_Movimiento, v_ID_Almacen_Material_Origen, v_ID_Almacen_Material_Destino, v_ID_Material, v_Cantidad);
-
-        ELSE
-            -- Procesar máquinas
-            -- Actualizar stock en el centro de origen y destino
-            DELETE FROM Almacenes_Maquinas
-            WHERE ID_Centro = p_ID_Centro_Origen
-            AND ID_Maquina = v_ID_Maquina;
-
-            INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
-            VALUES (v_ID_Centro_Destino, v_ID_Maquina);
-
-            -- Obtener los IDs de los almacenes
-            SET v_ID_Almacen_Maquina_Origen = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas WHERE ID_Centro = p_ID_Centro_Origen AND ID_Maquina = v_ID_Maquina);
-            SET v_ID_Almacen_Maquina_Destino = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas WHERE ID_Centro = v_ID_Centro_Destino AND ID_Maquina = v_ID_Maquina);
-
-            -- Registrar el detalle del movimiento
-            INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
-            VALUES (v_ID_Movimiento, v_ID_Almacen_Maquina_Origen, v_ID_Almacen_Maquina_Destino, v_ID_Maquina);
-        END IF;
-
-    END LOOP;
-
-    CLOSE cursor2;
+    -- Registrar el detalle del movimiento para máquinas
+    INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
+    SELECT 
+        v_ID_Movimiento,
+        am_origen.ID_Almacen_Maquina AS ID_Almacen_Origen,
+        am_destino.ID_Almacen_Maquina AS ID_Almacen_Destino,
+        ds.ID_Maquina
+    FROM Detalle_Solicitudes ds
+    LEFT JOIN Almacenes_Maquinas am_origen ON am_origen.ID_Centro = p_ID_Centro_Origen AND am_origen.ID_Maquina = ds.ID_Maquina
+    LEFT JOIN Almacenes_Maquinas am_destino ON am_destino.ID_Centro = v_ID_Centro_Destino AND am_destino.ID_Maquina = ds.ID_Maquina
+    WHERE ds.ID_Solicitud = p_ID_Solicitud
+    AND ds.Tipo = 'Maquina';
 
 END //
 
@@ -365,10 +351,6 @@ CREATE PROCEDURE GenerarPedidoCompras(
     IN ID_Empleado_Compras INT
 )
 BEGIN
-    DECLARE ID_Material INT;
-    DECLARE Cantidad_Solicitada INT;
-    DECLARE Cantidad_Disponible INT;
-    DECLARE Cantidad_Faltante INT;
     DECLARE ID_Pedido INT;
 
     -- Verificar si la solicitud está aprobada
@@ -383,39 +365,21 @@ BEGIN
     -- Obtener el ID del pedido de compras recién creado
     SET ID_Pedido = LAST_INSERT_ID();
 
-    -- Iterar sobre los detalles de la solicitud aprobada
-    DECLARE cursor1 CURSOR FOR
-        SELECT ID_Material, Cantidad
-        FROM Detalle_Solicitudes
-        WHERE ID_Solicitud = ID_Solicitud
-          AND ID_Material IS NOT NULL;
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND CLOSE cursor1;
-
-    OPEN cursor1;
-
-    read_loop: LOOP
-        FETCH cursor1 INTO ID_Material, Cantidad_Solicitada;
-
-        IF NOT (ID_Material IS NOT NULL) THEN
-            LEAVE read_loop;
-        END IF;
-
-        -- Obtener la cantidad disponible del material en todos los centros
-        SET Cantidad_Disponible = (SELECT SUM(Cantidad) FROM Almacenes_Materiales WHERE ID_Material = ID_Material);
-
-        -- Calcular la cantidad faltante
-        SET Cantidad_Faltante = Cantidad_Solicitada - IFNULL(Cantidad_Disponible, 0);
-
-        IF Cantidad_Faltante > 0 THEN
-            -- Insertar el detalle del pedido de compras para los materiales faltantes
-            INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
-            VALUES (ID_Pedido, ID_Material, Cantidad_Faltante);
-        END IF;
-
-    END LOOP;
-
-    CLOSE cursor1;
+    -- Insertar los detalles del pedido de compras para materiales faltantes
+    INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
+    SELECT 
+        ID_Pedido,
+        ds.ID_Material,
+        ds.Cantidad - IFNULL(am.TotalDisponible, 0) AS Cantidad_Faltante
+    FROM Detalle_Solicitudes ds
+    LEFT JOIN (
+        SELECT ID_Material, SUM(Cantidad) AS TotalDisponible
+        FROM Almacenes_Materiales
+        GROUP BY ID_Material
+    ) am ON ds.ID_Material = am.ID_Material
+    WHERE ds.ID_Solicitud = ID_Solicitud
+      AND ds.ID_Material IS NOT NULL
+      AND ds.Cantidad > IFNULL(am.TotalDisponible, 0);
 
 END;
 //
