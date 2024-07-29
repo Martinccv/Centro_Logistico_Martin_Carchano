@@ -220,10 +220,9 @@ ID_Maquina: INT — Identificador de la máquina para la que se desea obtener el
 VARCHAR(50) — Estado de la máquina.
 ### Ejemplo de Uso:
 
-sql
-
+```sql
 SELECT fn_ObtenerEstadoMaquina(1);
-
+```
 Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
 
 ### 2. Función: ObtenerCantidadMaterialPorCentro
@@ -238,10 +237,9 @@ Valor Retornado:
 TEXT — Una cadena de texto que enumera cada centro y la cantidad del material en ese centro.
 ### Ejemplo de Uso:
 
-sql
-
+```sql
 SELECT ObtenerCantidadMaterialPorCentro(5);
-
+```
 Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
 
 ### 3. Función: ObtenerCantidadMaterialCentro
@@ -257,10 +255,9 @@ Valor Retornado:
 INT — Cantidad del material en el centro. Retorna 0 si el material no está presente en el centro.
 ### Ejemplo de Uso:
 
-sql
-
+```sql
 SELECT ObtenerCantidadMaterialCentro(3, 5);
-
+```
 Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el centro con ID_Centro igual a 3.
   
 ### Triggers
