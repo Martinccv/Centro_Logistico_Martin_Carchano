@@ -164,44 +164,44 @@ Tabla que almacena el detalle de los pedidos de compras de materiales.
 Se establecen las siguientes relaciones clave entre las tablas:
 
 ### 1. Materiales - Proveedores:
-- Materiales.ID_Proveedor → Proveedores.ID_Proveedor
+- Materiales.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Materiales
 ### 3. Máquinas - Proveedores:
-- Maquinas.ID_Proveedor → Proveedores.ID_Proveedor
+- Maquinas.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Maquinas
 ### 4. Empleados - Centros: 
-- Empleados.ID_Centro → Centros.ID_Centro
+- Empleados.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Empleados
 ### 5. Almacenes_Materiales - Centros, Materiales:
-- Almacenes_Materiales.ID_Centro → Centros.ID_Centro
-- Almacenes_Materiales.ID_Material → Materiales.ID_Material
+- Almacenes_Materiales.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Almacenes_Materiales
+- Almacenes_Materiales.ID_Material → Materiales.ID_Material, relación: * Materiales - * Almacenes_Materiales
 ### 5. Almacenes_Maquinas - Centros, Máquinas:
-- Almacenes_Maquinas.ID_Centro → Centros.ID_Centro
-- Almacenes_Maquinas.ID_Maquina → Maquinas.ID_Maquina
+- Almacenes_Maquinas.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Almacenes_Maquinas
+- Almacenes_Maquinas.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Almacenes_Maquinas
 ### 6. Solicitudes - Clientes, Empleados, Proveedores, Centros:
-- Solicitudes.ID_Cliente → Clientes.ID_Cliente
-- Solicitudes.ID_Empleado → Empleados.ID_Empleado
-- Solicitudes.ID_Proveedor → Proveedores.ID_Proveedor
-- Solicitudes.ID_Centro → Centros.ID_Centro
+- Solicitudes.ID_Cliente → Clientes.ID_Cliente, relación: 1 Cliente - * Solicitudes
+- Solicitudes.ID_Empleado → Empleados.ID_Empleado, relación: 1 Empleado - * Solicitudes
+- Solicitudes.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Solicitudes
+- Solicitudes.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Solicitudes
 ### 7. Detalle_Solicitudes - Solicitudes, Materiales, Máquinas:
-- Detalle_Solicitudes.ID_Solicitud → Solicitudes.ID_Solicitud
-- Detalle_Solicitudes.ID_Material → Materiales.ID_Material
-- Detalle_Solicitudes.ID_Maquina → Maquinas.ID_Maquina
+- Detalle_Solicitudes.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Solicitud - * Detalle_Solicitudes
+- Detalle_Solicitudes.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Solicitudes
+- Detalle_Solicitudes.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Detalle_Solicitudes
 ### 8. Autorizaciones - Solicitudes, Socios Gerentes:
-- Autorizaciones.ID_Solicitud → Solicitudes.ID_Solicitud
-- Autorizaciones.ID_Socio_Gerente → Socios_Gerentes.ID_Socio_Gerente
+- Autorizaciones.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Autorización - 1 Solicitud
+- Autorizaciones.ID_Socio_Gerente → Socios_Gerentes.ID_Socio_Gerente, relación: 1 Socio_Gerente - * Autorizaciones
 ### 9. Movimientos - Empleados, Autorizaciones:
-- Movimientos.ID_Empleado → Empleados.ID_Empleado
-- Movimientos.ID_Autorizacion → Autorizaciones.ID_Autorizacion
+- Movimientos.ID_Empleado → Empleados.ID_Empleado, relación: 1 Empleado - * Movimientos
+- Movimientos.ID_Autorizacion → Autorizaciones.ID_Autorizacion, relación: 1 Autorización - * Movimientos
 ### 10. Detalle_Movimientos - Movimientos, Centros, Materiales, Máquinas:
-- Detalle_Movimientos.ID_Movimiento → Movimientos.ID_Movimiento
-- Detalle_Movimientos.ID_Almacen_Origen → Centros.ID_Centro
-- Detalle_Movimientos.ID_Almacen_Destino → Centros.ID_Centro
-- Detalle_Movimientos.ID_Material → Materiales.ID_Material
-- Detalle_Movimientos.ID_Maquina → Maquinas.ID_Maquina
+- Detalle_Movimientos.ID_Movimiento → Movimientos.ID_Movimiento, relación: 1 Movimiento - * Detalle_Movimientos
+- Detalle_Movimientos.ID_Almacen_Origen → Centros.ID_Centro, relación: 1 Centro origen - * Detalle_Movimientos
+- Detalle_Movimientos.ID_Almacen_Destino → Centros.ID_Centro, relación: 1 Centro destino - * Detalle_Movimientos
+- Detalle_Movimientos.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Movimientos
+- Detalle_Movimientos.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Detalle_Movimientos
 ### 11. Pedidos_Compras - Solicitudes, Empleados:
-- Pedidos_Compras.ID_Solicitud → Solicitudes.ID_Solicitud
-- Pedidos_Compras.ID_Empleado_Compras → Empleados.ID_Empleado
+- Pedidos_Compras.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Solicitud - * Pedidos_Compras
+- Pedidos_Compras.ID_Empleado_Compras → Empleados.ID_Empleado, relación: 1 Empleado - * Pedidos_Compras
 ### 12. Detalle_Pedidos_Compras - Pedidos_Compras, Materiales:
-- Detalle_Pedidos_Compras.ID_Pedido → Pedidos_Compras.ID_Pedido
-Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material
+- Detalle_Pedidos_Compras.ID_Pedido → Pedidos_Compras.ID_Pedido, relación: 1 Pedido_Compras - * Detalles_Pedido_Compras
+Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Pedido_Compras 
 
 ## Stored Procedures, Triggers, Vistas y Funciones
 
