@@ -10,7 +10,7 @@ LEFT JOIN Clientes c ON s.ID_Cliente = c.ID_Cliente
 LEFT JOIN Empleados e ON s.ID_Empleado = e.ID_Empleado
 WHERE s.Estado = 'Pendiente';
 
--- Muestra los materiales disponibles en un Centro en especifico
+-- Muestra los materiales disponibles en un Centro específico clasificado como depósito
 DROP VIEW IF EXISTS Vista_Materiales_Centro;
 
 CREATE VIEW Vista_Materiales_Centro AS
@@ -25,9 +25,9 @@ JOIN
 JOIN 
     Materiales M ON AM.ID_Material = M.ID_Material
 WHERE
-    C.ID_Centro = 1; -- Sustituir @ID_Centro por el identificador del centro deseado
+    C.Tipo = 'Deposito'; -- Filtra por centros clasificados como depósito
 
--- Muestra las maquinas disponibles en un Centro en especifico
+-- Muestra las máquinas disponibles en un Centro específico clasificado como depósito
 DROP VIEW IF EXISTS Vista_Maquinas_Centro;
 
 CREATE VIEW Vista_Maquinas_Centro AS
@@ -43,7 +43,7 @@ JOIN
 JOIN 
     Maquinas Maq ON AMQ.ID_Maquina = Maq.ID_Maquina
 WHERE
-    C.ID_Centro = 1; -- Sustituir @ID_Centro por el identificador del centro deseado
+    C.Tipo = 'Deposito'; -- Filtra por centros clasificados como depósito
 
 -- Vistas para Consultar Información de Movimientos
 DROP VIEW IF EXISTS Vista_Movimientos;
