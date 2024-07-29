@@ -204,69 +204,7 @@ Se establecen las siguientes relaciones clave entre las tablas:
 Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material
 
 ## Stored Procedures, Triggers, Vistas y Funciones
-### Funciones
-- Función para calcular la cantidad total de un material en todos los almacenes.
-- Función para obtener el estado actual de una máquina.
 
-### 1. Función: fn_ObtenerEstadoMaquina
-### Descripción:
-Devuelve el estado de una máquina específica en función de su identificador.
-
-### Parámetros:
-
-ID_Maquina: INT — Identificador de la máquina para la que se desea obtener el estado.
-### Valor Retornado:
-
-VARCHAR(50) — Estado de la máquina.
-### Ejemplo de Uso:
-
-```sql
-SELECT fn_ObtenerEstadoMaquina(1);
-```
-Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
-
-### 2. Función: ObtenerCantidadMaterialPorCentro
-### Descripción:
-Verifica y devuelve la cantidad de un material específico en todos los centros. La función utiliza un cursor para iterar sobre los centros y concatenar los resultados en una cadena de texto.
-
-### Parámetros:
-
-p_ID_Material: INT — Identificador del material para el cual se desea conocer la cantidad en los diferentes centros.
-Valor Retornado:
-
-TEXT — Una cadena de texto que enumera cada centro y la cantidad del material en ese centro.
-### Ejemplo de Uso:
-
-```sql
-SELECT ObtenerCantidadMaterialPorCentro(5);
-```
-Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
-
-### 3. Función: ObtenerCantidadMaterialCentro
-### Descripción:
-Calcula y devuelve la cantidad de un material específico en un centro determinado. Si el material no está disponible en el centro, la función retorna 0.
-
-### Parámetros:
-
-centro_id: INT — Identificador del centro en el cual se desea verificar la cantidad del material.
-material_id: INT — Identificador del material cuya cantidad se desea conocer en el centro especificado.
-Valor Retornado:
-
-INT — Cantidad del material en el centro. Retorna 0 si el material no está presente en el centro.
-### Ejemplo de Uso:
-
-```sql
-SELECT ObtenerCantidadMaterialCentro(3, 5);
-```
-Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el centro con ID_Centro igual a 3.
-  
-### Triggers
-- Trigger para actualizar el inventario de materiales al realizar un movimiento.
-- Trigger para notificar a los empleados de compras cuando una solicitud no puede ser completamente satisfecha.
-### Stored Procedures
-- Procedure para procesar una nueva solicitud.
-- Procedure para autorizar un movimiento.
-- Procedure para realizar un pedido de compra.
 
 ## Vistas
 ### 1. vw_SolicitudesPendientes
@@ -345,3 +283,65 @@ Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo,
 - Estado: Estado actual de la solicitud.
 ### Uso:
 Esta vista permite consultar la información detallada de todas las solicitudes en el sistema, facilitando el análisis y seguimiento de las mismas.
+
+## Funciones
+
+### 1. fn_ObtenerEstadoMaquina
+### Descripción:
+Devuelve el estado de una máquina específica en función de su identificador.
+
+### Parámetros:
+
+ID_Maquina: INT — Identificador de la máquina para la que se desea obtener el estado.
+### Valor Retornado:
+
+VARCHAR(50) — Estado de la máquina.
+### Ejemplo de Uso:
+
+```sql
+SELECT fn_ObtenerEstadoMaquina(1);
+```
+Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
+
+### 2. ObtenerCantidadMaterialPorCentro
+### Descripción:
+Verifica y devuelve la cantidad de un material específico en todos los centros. La función utiliza un cursor para iterar sobre los centros y concatenar los resultados en una cadena de texto.
+
+### Parámetros:
+
+p_ID_Material: INT — Identificador del material para el cual se desea conocer la cantidad en los diferentes centros.
+Valor Retornado:
+
+TEXT — Una cadena de texto que enumera cada centro y la cantidad del material en ese centro.
+### Ejemplo de Uso:
+
+```sql
+SELECT ObtenerCantidadMaterialPorCentro(5);
+```
+Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
+
+### 3. ObtenerCantidadMaterialCentro
+### Descripción:
+Calcula y devuelve la cantidad de un material específico en un centro determinado. Si el material no está disponible en el centro, la función retorna 0.
+
+### Parámetros:
+
+centro_id: INT — Identificador del centro en el cual se desea verificar la cantidad del material.
+material_id: INT — Identificador del material cuya cantidad se desea conocer en el centro especificado.
+Valor Retornado:
+
+INT — Cantidad del material en el centro. Retorna 0 si el material no está presente en el centro.
+### Ejemplo de Uso:
+
+```sql
+SELECT ObtenerCantidadMaterialCentro(3, 5);
+```
+Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el centro con ID_Centro igual a 3.
+  
+### Triggers
+- Trigger para actualizar el inventario de materiales al realizar un movimiento.
+- Trigger para notificar a los empleados de compras cuando una solicitud no puede ser completamente satisfecha.
+### Stored Procedures
+- Procedure para procesar una nueva solicitud.
+- Procedure para autorizar un movimiento.
+- Procedure para realizar un pedido de compra.
