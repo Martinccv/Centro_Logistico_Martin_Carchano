@@ -34,7 +34,7 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 - Triggers
 - Stored Procedures
 - Vistas
-### Esquema de Base de Datos
+## Esquema de Base de Datos
 ### 1. Proveedores
 Tabla que almacena la información de los proveedores de materiales y máquinas.
 
