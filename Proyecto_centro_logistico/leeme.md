@@ -341,7 +341,86 @@ Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el
 ### Triggers
 - Trigger para actualizar el inventario de materiales al realizar un movimiento.
 - Trigger para notificar a los empleados de compras cuando una solicitud no puede ser completamente satisfecha.
-### Stored Procedures
-- Procedure para procesar una nueva solicitud.
-- Procedure para autorizar un movimiento.
-- Procedure para realizar un pedido de compra.
+## Stored Procedures
+
+### 1. `sp_AprobarORechazarSolicitud`
+
+### Descripción:
+Aprueba o rechaza una solicitud de materiales o máquinas. Actualiza el estado en las tablas `Autorizaciones` y `Solicitudes`.
+
+### Parámetros:
+- `p_ID_Solicitud`: `INT` — Identificador de la solicitud que se desea aprobar o rechazar.
+- `p_ID_Socio_Gerente`: `INT` — Identificador del socio gerente que está realizando la acción.
+- `p_Accion`: `VARCHAR(10)` — Acción a realizar. Debe ser `'Aprobar'` o `'Rechazar'`.
+
+### Valor Retornado:
+Ninguno.
+
+### Ejemplo de Uso:
+```sql
+CALL sp_AprobarORechazarSolicitud(1, 101, 'Aprobar');
+```
+Este ejemplo aprueba la solicitud con ID_Solicitud igual a 1 por parte del socio gerente con ID_Socio_Gerente igual a 101.
+
+### 2. CrearSolicitud
+### Descripción:
+Registra una nueva solicitud de materiales o máquinas. Crea una entrada en la tabla Solicitudes y añade detalles a Detalle_Solicitudes a partir de un JSON que contiene los elementos y cantidades.
+
+### Parámetros:
+
+- p_Tipo: ENUM('Material', 'Maquina') — Tipo de solicitud. Puede ser 'Material' o 'Maquina'.
+- p_ID_Cliente: INT — Identificador del cliente que realiza la solicitud.
+- p_ID_Empleado: INT — Identificador del empleado que realiza la solicitud.
+- p_ID_Centro: INT — Identificador del centro donde se requiere el material o máquina.
+- p_DetallesSolicitud: JSON — JSON que contiene los detalles de la solicitud, incluyendo IDs de materiales o máquinas y sus cantidades.
+### Valor Retornado:
+Ninguno.
+
+### Ejemplo de Uso:
+
+```sql
+CALL CrearSolicitud('Material', 1, 202, 303, '[{"ID_Item": 5, "Cantidad": 10}]');
+```
+Este ejemplo crea una solicitud de materiales para el cliente con ID_Cliente igual a 1, el empleado con ID_Empleado igual a 202, en el centro con ID_Centro igual a 303, solicitando 10 unidades del material con ID_Item igual a 5.
+
+### 3. RegistrarSalida
+### Descripción:
+Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
+
+### Parámetros:
+
+p_Tipo: ENUM('Material', 'Maquina') — Tipo de ítem. Puede ser 'Material' o 'Maquina'.
+p_ID_Centro: INT — Identificador del centro del que se realiza la salida.
+p_ID_Item: INT — Identificador del material o máquina que se está retirando.
+p_Cantidad: INT — Cantidad del material a retirar. Ignorado para máquinas.
+p_ID_Empleado: INT — Identificador del empleado que realiza la salida.
+### Valor Retornado:
+Ninguno.
+
+### Ejemplo de Uso:
+
+```sql
+CALL RegistrarSalida('Material', 303, 5, 10, 202);
+```
+Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
+
+### 4. RegistrarIngreso
+### Descripción:
+Registra el ingreso de materiales o máquinas a un centro. Crea un registro en la tabla Movimientos y actualiza o inserta en la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
+
+### Parámetros:
+
+p_Tipo: ENUM('Material', 'Maquina') — Tipo de ítem. Puede ser 'Material' o 'Maquina'.
+p_ID_Centro: INT — Identificador del centro al que se ingresa el material o máquina.
+p_ID_Item: INT — Identificador del material o máquina que se está ingresando.
+p_Cantidad: INT — Cantidad del material a ingresar. Ignorado para máquinas.
+p_ID_Empleado: INT — Identificador del empleado que realiza el ingreso.
+Valor Retornado:
+Ninguno.
+
+### Ejemplo de Uso:
+
+```sql
+CALL RegistrarIngreso('Material', 303, 5, 20, 202);
+```
+Este ejemplo registra el ingreso de 20 unidades del material con ID_Material igual a 5 al centro con ID_Centro igual a 303, realizado por el empleado con ID_Empleado igual a 202.

@@ -18,7 +18,7 @@ END;
 //
 DELIMITER ;
 
--- 
+-- Actualiza el stock en el centro de origen y centro de destino
 DELIMITER //
 
 CREATE TRIGGER actualizar_stock_materiales
@@ -48,4 +48,19 @@ END;
 
 DELIMITER ;
 
--- 
+-- Trigger para actualizar el estado de una solicitud a "Aprobada" cuando se apruebe la autorización
+DELIMITER //
+
+CREATE TRIGGER ActualizarEstadoSolicitudAprobada
+AFTER INSERT ON Autorizaciones
+FOR EACH ROW
+BEGIN
+    IF NEW.Estado = 'Aprobada' THEN
+        UPDATE Solicitudes
+        SET Estado = 'Aprobada'
+        WHERE ID_Solicitud = NEW.ID_Solicitud;
+    END IF;
+END //
+
+DELIMITER ;
+
