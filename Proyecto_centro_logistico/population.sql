@@ -38,7 +38,7 @@ IGNORE 1 LINES
 LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados.csv'
 INTO TABLE Empleados
 FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\r\n'
+LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (Nombre,Cargo,Telefono,ID_Centro,Tipo);
 
@@ -65,6 +65,7 @@ IGNORE 1 LINES
  LINES TERMINATED BY '\n'
  IGNORE 1 LINES
  ( ID_Centro,ID_Maquina);
+
 -- Socios_gerentes 
 LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Socios_Gerentes.csv'
 INTO TABLE Socios_Gerentes
@@ -77,7 +78,7 @@ IGNORE 1 LINES
  LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Solicitudes.csv'
  INTO TABLE Solicitudes
  FIELDS TERMINATED BY ',' ENCLOSED BY '"'
- LINES TERMINATED BY '\n'
+ LINES TERMINATED BY '\r\n'
  IGNORE 1 LINES
  (Fecha,Tipo,ID_Cliente,ID_Empleado,Estado,ID_Proveedor,ID_Centro);
 
@@ -85,7 +86,7 @@ IGNORE 1 LINES
  LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Detalle_Solicitudes.csv'
  INTO TABLE Detalle_Solicitudes
  FIELDS TERMINATED BY ',' ENCLOSED BY '"'
- LINES TERMINATED BY '\r\n'
+ LINES TERMINATED BY '\n'
  IGNORE 1 LINES
  (ID_Solicitud,ID_Material,ID_Maquina,Cantidad);
 
