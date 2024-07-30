@@ -18,48 +18,27 @@ END //
 
 DELIMITER ;
 
--- Verificar cantidad de materiales por centro
+-- Obtiene la cantidad de material que se elige por cada centro
 DELIMITER //
 
 CREATE FUNCTION ObtenerCantidadMaterialPorCentro(
     p_ID_Material INT
 ) RETURNS TEXT
 READS SQL DATA
-NOT DETERMINISTIC
 BEGIN
-    DECLARE done INT DEFAULT 0;
-    DECLARE v_ID_Centro INT;
-    DECLARE v_Nombre_Centro VARCHAR(255);
-    DECLARE v_Cantidad INT;
-    DECLARE resultado TEXT DEFAULT '';
+    DECLARE resultado TEXT;
 
-    -- Declarar el cursor para iterar sobre los centros y sus cantidades
-    DECLARE cursor1 CURSOR FOR
-        SELECT c.ID_Centro, c.Nombre, IFNULL(am.Cantidad, 0)
-        FROM Centros c
-        LEFT JOIN Almacenes_Materiales am ON c.ID_Centro = am.ID_Centro AND am.ID_Material = p_ID_Material;
-
-    -- Handler para cuando no haya más filas que procesar
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-    OPEN cursor1;
-
-    read_loop: LOOP
-        FETCH cursor1 INTO v_ID_Centro, v_Nombre_Centro, v_Cantidad;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-
-        -- Concatenar los resultados en una cadena de texto
-        SET resultado = CONCAT(resultado, 'Centro ID: ', v_ID_Centro, ' - ', v_Nombre_Centro, ' - Cantidad: ', v_Cantidad, '\n');
-    END LOOP;
-
-    CLOSE cursor1;
+    -- Usar GROUP_CONCAT para construir la cadena de resultados
+    SELECT GROUP_CONCAT(CONCAT('Centro ID: ', c.ID_Centro, ' - ', c.Nombre, ' - Cantidad: ', IFNULL(am.Cantidad, 0)) SEPARATOR '\n')
+    INTO resultado
+    FROM Centros c
+    LEFT JOIN Almacenes_Materiales am ON c.ID_Centro = am.ID_Centro AND am.ID_Material = p_ID_Material;
 
     RETURN resultado;
 END //
 
 DELIMITER ;
+
 
 -- Calcula el total de materiales asignados a una Centro en especifico
 DROP FUNCTION IF EXISTS ObtenerCantidadMaterialCentro;
