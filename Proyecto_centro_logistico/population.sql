@@ -34,13 +34,14 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (Nombre, Direccion, Telefono);
 
--- Empleados
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados.csv'
-INTO TABLE Empleados
+-- Socios_gerentes 
+LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Socios_Gerentes.csv'
+INTO TABLE Socios_Gerentes
 FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(Nombre,Cargo,Telefono,ID_Centro,Tipo);
+(Nombre, Telefono);
+
 
 -- Centros
 LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Centros.csv'
@@ -49,6 +50,14 @@ FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (Nombre,Direccion,Tipo);
+
+-- Empleados
+LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Empleados.csv'
+INTO TABLE Empleados
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(Nombre,Cargo,Telefono,ID_Centro,Tipo);
 
 -- Almacenes_Materiales
  LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Almacenes_Materiales.csv'
@@ -66,19 +75,12 @@ IGNORE 1 LINES
  IGNORE 1 LINES
  ( ID_Centro,ID_Maquina);
 
--- Socios_gerentes 
-LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Socios_Gerentes.csv'
-INTO TABLE Socios_Gerentes
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(Nombre, Telefono);
 
 -- Solicitudes
  LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Solicitudes.csv'
  INTO TABLE Solicitudes
  FIELDS TERMINATED BY ',' ENCLOSED BY '"'
- LINES TERMINATED BY '\r\n'
+ LINES TERMINATED BY '\n'
  IGNORE 1 LINES
  (Fecha,Tipo,ID_Cliente,ID_Empleado,Estado,ID_Proveedor,ID_Centro);
 
@@ -89,12 +91,3 @@ IGNORE 1 LINES
  LINES TERMINATED BY '\n'
  IGNORE 1 LINES
  (ID_Solicitud,ID_Material,ID_Maquina,Cantidad);
-
--- Autorizaciones
- LOAD DATA LOCAL INFILE './Proyecto_centro_logistico//data_csv/Autorizaciones.csv'
- INTO TABLE Autorizaciones
- FIELDS TERMINATED BY ',' ENCLOSED BY '"'
- LINES TERMINATED BY '\n'
- IGNORE 1 LINES
- ( ID_Solicitud, ID_Socio_Gerente, Estado, Fecha);
-

@@ -20,7 +20,7 @@ CREATE TABLE Proveedores (
 
 -- Tabla de Materiales
 CREATE TABLE Materiales (
-    ID_Material INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Material INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Descripcion TEXT,
     Unidad VARCHAR(10),
@@ -29,7 +29,7 @@ CREATE TABLE Materiales (
 
 -- Tabla de Maquinas
 CREATE TABLE Maquinas (
-    ID_Maquina INT AUTO_INCREMENT PRIMARY KEY,
+    ID_Maquina INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Descripcion TEXT,
     Estado VARCHAR(50),
@@ -72,7 +72,7 @@ CREATE TABLE Socios_Gerentes (
 -- Tabla de Almacenes de Materiales
 CREATE TABLE Almacenes_Materiales (
     ID_Almacen_Material INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Centro INT,
+    ID_Centro INT NOT NULL,
     ID_Material INT,
     Cantidad INT DEFAULT 0
 );
@@ -80,7 +80,7 @@ CREATE TABLE Almacenes_Materiales (
 -- Tabla de Almacenes de Maquinas
 CREATE TABLE Almacenes_Maquinas (
     ID_Almacen_Maquina INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Centro INT,
+    ID_Centro INT NOT NULL,
     ID_Maquina INT
 );
 
@@ -90,7 +90,7 @@ CREATE TABLE Solicitudes (
     Fecha DATE,
     Tipo ENUM('Material', 'Maquina') NOT NULL,
     ID_Cliente INT,
-    ID_Empleado INT,
+    ID_Empleado INT NOT NULL,
     Estado ENUM('Pendiente', 'Parcial', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
     ID_Proveedor INT,
     ID_Centro INT NOT NULL
@@ -98,8 +98,8 @@ CREATE TABLE Solicitudes (
 
 -- Tabla de Detalle de Solicitudes
 CREATE TABLE Detalle_Solicitudes (
-    ID_Detalle_Solicitud INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Solicitud INT,
+    ID_Detalle_Solicitud INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ID_Solicitud INT NOT NULL,
     ID_Material INT,
     ID_Maquina INT,
     Cantidad INT
@@ -108,8 +108,8 @@ CREATE TABLE Detalle_Solicitudes (
 -- Tabla de Autorizaciones
 CREATE TABLE Autorizaciones (
     ID_Autorizacion INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Solicitud INT,
-    ID_Socio_Gerente INT,
+    ID_Solicitud INT NOT NULL,
+    ID_Socio_Gerente INT NOT NULL,
     Estado ENUM('Aprobada', 'Rechazada', 'Pendiente') DEFAULT 'Pendiente',
     Fecha DATE
 );
@@ -119,16 +119,16 @@ CREATE TABLE Movimientos (
     ID_Movimiento INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATE,
     Tipo ENUM('Entrada', 'Salida', 'Transferencia') NOT NULL,
-    ID_Empleado INT,
-    ID_Autorizacion INT
+    ID_Empleado INT NOT NULL,
+    ID_Autorizacion INT NOT NULL
 );
 
 -- Tabla de Detalle de Movimientos
 CREATE TABLE Detalle_Movimientos (
     ID_Detalle_Movimiento INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Movimiento INT,
+    ID_Movimiento INT NOT NULL,
     ID_Almacen_Origen INT,
-    ID_Almacen_Destino INT,
+    ID_Almacen_Destino INT NOT NULL,
     ID_Material INT,
     ID_Maquina INT,
     Cantidad INT
@@ -137,17 +137,17 @@ CREATE TABLE Detalle_Movimientos (
 -- Tabla de Pedidos de Compras
 CREATE TABLE Pedidos_Compras (
     ID_Pedido INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Solicitud INT,
+    ID_Solicitud INT NOT NULL,
     Fecha DATE,
-    ID_Empleado_Compras INT
+    ID_Empleado_Compras INT NOT NULL
 );
 
 -- Tabla de Detalle de Pedidos de Compras
 CREATE TABLE Detalle_Pedidos_Compras (
     ID_Detalle_Pedido INT AUTO_INCREMENT PRIMARY KEY,
-    ID_Pedido INT,
-    ID_Material INT,
-    Cantidad_Pendiente INT
+    ID_Pedido INT NOT NULL,
+    ID_Material INT NOT NULL,
+    Cantidad_Pendiente INT DEFAULT 0
 );
 
 -- Relaciones entre tablas
