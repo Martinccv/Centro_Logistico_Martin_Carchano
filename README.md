@@ -421,6 +421,6 @@ Ninguno.
 ### Ejemplo de Uso:
 
 ```sql
-CALL RegistrarIngreso('Material', 303, 5, 20, 202);
+CALL RegistrarIngreso('Material', 3, 5, 20, 2);
 ```
 Este ejemplo registra el ingreso de 20 unidades del material con ID_Material igual a 5 al centro con ID_Centro igual a 303, realizado por el empleado con ID_Empleado igual a 202.

@@ -165,8 +165,6 @@ END //
 DELIMITER ;
 
 -- Procedimiento para registrar el ingreso de materiales y máquinas
-DROP PROCEDURE IF EXISTS RegistrarIngreso;
-
 DELIMITER //
 
 CREATE PROCEDURE RegistrarIngreso(
@@ -182,7 +180,7 @@ BEGIN
 
     -- Registrar el movimiento en la tabla 'Movimientos'
     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
-    VALUES (CURDATE(), 'Ingreso', p_ID_Empleado);
+    VALUES (CURDATE(), 'Entrada', p_ID_Empleado);
 
     -- Obtener el ID del movimiento recién creado
     SET v_ID_Movimiento = LAST_INSERT_ID();
@@ -217,14 +215,13 @@ BEGIN
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, Cantidad, ID_Material)
         VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_Cantidad, p_ID_Item);
 
-    ELSE
+    ELSEIF p_Tipo = 'Maquina' THEN
         -- Procesar máquinas
         -- Verificar si la máquina ya existe en el centro
         IF EXISTS (
             SELECT 1 FROM Almacenes_Maquinas 
             WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item
         ) THEN
-            -- No es necesario actualizar la cantidad, ya que las máquinas no tienen cantidad
             -- Obtener el ID del almacén
             SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas 
                                        WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item);
@@ -243,10 +240,13 @@ BEGIN
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Maquina)
         VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_ID_Item);
 
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tipo de ítem inválido';
     END IF;
 END //
 
 DELIMITER ;
+
 
 
 -- realizar movimiento una vez tengo solicitud aprobada
