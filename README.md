@@ -203,10 +203,12 @@ Se establecen las siguientes relaciones clave entre las tablas:
 - Detalle_Pedidos_Compras.ID_Pedido → Pedidos_Compras.ID_Pedido, relación: 1 Pedido_Compras - * Detalles_Pedido_Compras
 Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Pedido_Compras 
 
-## Stored Procedures, Triggers, Vistas y Funciones
+# Stored Procedures, Triggers, Vistas y Funciones
 
-## Vistas
-### 1. Vista_SolicitudesPendientes
+# Vistas
+
+## 1. Vista_SolicitudesPendientes
+
 ### Descripción:
 Muestra una lista de todas las solicitudes que están pendientes de aprobación. Incluye detalles sobre la solicitud, el cliente asociado y el empleado que la creó.
 
@@ -223,7 +225,8 @@ Esta vista es útil para los gestores y responsables que necesitan revisar y apr
 SELECT * FROM Vista_SolicitudesPendientes;
 ```
 
-### 2. Vista_Materiales_Centro
+## 2. Vista_Materiales_Centro
+
 ### Descripción:
 Muestra los materiales disponibles en un centro específico que está clasificado como depósito. Incluye el nombre del centro, el nombre del material y la cantidad disponible.
 
@@ -238,7 +241,8 @@ Esta vista permite a los usuarios consultar rápidamente los materiales disponib
 SELECT * FROM Vista_Materiales_Centro;
 ```
 
-### 3. Vista_Maquinas_Centro
+## 3. Vista_Maquinas_Centro
+
 ### Descripción:
 Muestra las máquinas disponibles en un centro específico clasificado como depósito. Incluye el nombre del centro, el nombre de la máquina, una breve descripción y el estado de la máquina.
 
@@ -254,7 +258,8 @@ Esta vista es útil para consultar el inventario de máquinas en los centros de 
 SELECT * FROM Vista_Maquinas_Centro;
 ```
 
-### 4. Vista_Movimientos
+## 4. Vista_Movimientos
+
 ### Descripción:
 Proporciona información detallada sobre los movimientos de materiales y máquinas, incluyendo la fecha del movimiento, el tipo, el centro involucrado, el empleado responsable, y los detalles específicos del material o máquina movida.
 
@@ -275,7 +280,8 @@ Esta vista es útil para hacer un seguimiento de todos los movimientos de invent
 SELECT * FROM Vista_Movimientos;
 ```
 
-### 5. Vista_Solicitudes
+## 5. Vista_Solicitudes
+
 ### Descripción:
 Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo, cliente, empleado, centro asociado, y los detalles de los materiales y máquinas solicitados.
 
@@ -298,9 +304,10 @@ Esta vista permite consultar la información detallada de todas las solicitudes 
 SELECT * FROM Vista_Solicitudes;
 ```
 
-## Funciones
+# Funciones
 
-### 1. Funcion_ObtenerEstadoMaquina
+## 1. Funcion_ObtenerEstadoMaquina
+
 ### Descripción:
 Devuelve el estado de una máquina específica en función de su identificador.
 
@@ -317,7 +324,8 @@ SELECT Funcion_ObtenerEstadoMaquina(1);
 ```
 Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
 
-### 2. Funcion_ObtenerCantidadMaterialPorCentro
+## 2. Funcion_ObtenerCantidadMaterialPorCentro
+
 ### Descripción:
 Verifica y devuelve la cantidad de un material específico en todos los centros. La función utiliza un cursor para iterar sobre los centros y concatenar los resultados en una cadena de texto.
 
@@ -334,7 +342,8 @@ SELECT Funcion_ObtenerCantidadMaterialPorCentro(5);
 ```
 Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
 
-### 3. Funcion_ObtenerCantidadMaterialCentro
+## 3. Funcion_ObtenerCantidadMaterialCentro
+
 ### Descripción:
 Calcula y devuelve la cantidad de un material específico en un centro determinado. Si el material no está disponible en el centro, la función retorna 0.
 
@@ -352,9 +361,9 @@ SELECT Funcion_ObtenerCantidadMaterialCentro(2, 2);
 ```
 Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el centro con ID_Centro igual a 3.
   
-## Stored Procedures
+# Stored Procedures
 
-### 1. SP_AprobarORechazarSolicitud
+## 1. SP_AprobarORechazarSolicitud
 
 ### Descripción:
 Aprueba o rechaza una solicitud de materiales o máquinas. Actualiza el estado en las tablas `Autorizaciones` y `Solicitudes`.
@@ -373,7 +382,8 @@ CALL SP_AprobarORechazarSolicitud(1,1, 'Aprobar');
 ```
 Este ejemplo aprueba la solicitud con ID_Solicitud igual a 1 por parte del socio gerente con ID_Socio_Gerente igual a 101.
 
-### 2. SP_CrearSolicitud
+## 2. SP_CrearSolicitud
+
 ### Descripción:
 Registra una nueva solicitud de materiales o máquinas. Crea una entrada en la tabla Solicitudes y añade detalles a Detalle_Solicitudes a partir de un JSON que contiene los elementos y cantidades.
 
@@ -394,7 +404,8 @@ CALL SP_CrearSolicitud('Material', 1, 3, 3, '[{"ID_Item": 5, "Cantidad": 10}]');
 ```
 Este ejemplo crea una solicitud de materiales para el cliente con ID_Cliente igual a 1, el empleado con ID_Empleado igual a 202, en el centro con ID_Centro igual a 303, solicitando 10 unidades del material con ID_Item igual a 5.
 
-### 3. SP_RegistrarSalida
+## 3. SP_RegistrarSalida
+
 ### Descripción:
 Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
 
@@ -415,7 +426,8 @@ CALL SP_RegistrarSalida('Material', 3, 2, 10, 8);
 ```
 Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
 
-### 4. SP_RegistrarIngreso
+## 4. SP_RegistrarIngreso
+
 ### Descripción:
 Registra el ingreso de materiales o máquinas a un centro. Crea un registro en la tabla Movimientos y actualiza o inserta en la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
 
@@ -434,4 +446,177 @@ Ninguno.
 ```sql
 CALL SP_RegistrarIngreso('Material', 3, 5,1, 2);
 ```
-Este ejemplo registra el ingreso de 20 unidades del material con ID_Material igual a 5 al centro con ID_Centro igual a 303, realizado por el empleado con ID_Empleado igual a 202.
+## 5. SP_RealizarMovimiento
+
+### Propósito
+El procedimiento SP_RealizarMovimiento se utiliza para registrar un movimiento de transferencia de materiales y máquinas entre centros, basado en una solicitud previamente aprobada. Este procedimiento permite especificar los materiales y máquinas que se desean mover, así como las cantidades exactas de cada uno.
+
+### Parámetros
+**p_ID_Solicitud (INT):**
+
+- Descripción: El identificador único de la solicitud que se está procesando.
+- Requisitos: Debe existir en la tabla Solicitudes y estar en estado "Aprobada".
+**p_ID_Empleado (INT):**
+
+- Descripción: El identificador del empleado que está registrando el movimiento.
+- Requisitos: Debe existir en la tabla Empleados.
+**p_ID_Centro_Origen (INT):**
+
+- Descripción: El identificador del centro desde el cual se realizará el movimiento de materiales y máquinas.
+- Requisitos: Debe existir en la tabla Centros.
+**p_Materiales (JSON):**
+
+- Descripción: Un JSON que contiene los identificadores de los materiales y las cantidades a mover.
+- Formato:
+json
+```sql
+    {"ID_Material": INT, "Cantidad": INT},
+    ...
+```
+
+- Requisitos: Los ID_Material deben existir en el sistema y Cantidad debe ser un número positivo.
+**p_Maquinas (JSON):**
+
+- Descripción: Un JSON que contiene los identificadores de las máquinas que se desean mover.
+- Formato:
+json
+
+```sql
+    {"ID_Maquina": INT, "Cantidad": INT=1},
+    ...
+```
+- Requisitos: Los ID_Maquina deben existir en el sistema.
+
+### Funcionamiento
+1. **Verificación de la Solicitud:**
+
+Se verifica que la solicitud esté en estado "Aprobada". Si no lo está, el procedimiento lanza una excepción con el mensaje "La solicitud no está aprobada".
+2. **Registro del Movimiento:**
+
+Se inserta un nuevo registro en la tabla Movimientos para documentar la transferencia.
+3. **Procesamiento de Materiales:**
+
+El procedimiento itera sobre el JSON p_Materiales, registrando cada material y cantidad en Detalle_Movimientos.
+Se deduce la cantidad especificada de cada material en el centro de origen.
+4. **Procesamiento de Máquinas:**
+
+Similar al procesamiento de materiales, se registran las máquinas especificadas en p_Maquinas en Detalle_Movimientos.
+Las máquinas se eliminan del centro de origen y se registran en el centro de destino.
+
+### Excepciones
+El procedimiento lanza una excepción si la solicitud no está aprobada.
+Si se proporcionan datos inválidos o inconsistentes, el procedimiento puede fallar y registrar el error correspondiente.
+
+### Ejemplo de Uso
+```sql
+    CALL SP_RealizarMovimiento(
+    1,                -- ID de la solicitud aprobada
+    5,                  -- ID del empleado que registra el movimiento
+    1,                  -- ID del centro de origen
+    '[{"ID_Material": 1, "Cantidad": 50}, {"ID_Material": 2, "Cantidad": 20}]', -- Materiales a mover
+    '[{"ID_Maquina": 3}, {"ID_Maquina": 4}]' -- Máquinas a mover
+    );
+```
+
+Este procedimiento debe ejecutarse con los permisos adecuados para modificar las tablas Movimientos, Detalle_Movimientos, Almacenes_Materiales, y Almacenes_Maquinas.
+
+## 6. SP_GenerarPedidoCompras
+
+### Propósito
+El procedimiento SP_GenerarPedidoCompras se utiliza para generar un pedido de compras basado en una solicitud de materiales aprobada. Este procedimiento asegura que se compre solo la cantidad de materiales que no está disponible en los centros clasificados como depósitos.
+
+### Parámetros
+
+**ID_Solicitud (INT)**:
+  - Descripción: El identificador único de la solicitud aprobada que se está procesando.
+  - Requisitos: La solicitud debe estar en estado "Aprobada".
+
+**ID_Empleado_Compras (INT)**:
+  - Descripción: El identificador del empleado responsable de realizar el pedido de compras.
+  - Requisitos: Debe existir en la tabla `Empleados`.
+
+### Funcionamiento
+
+1. **Verificación de la Solicitud**:
+   - Se verifica que la solicitud esté en estado "Aprobada". Si no lo está, el procedimiento lanza una excepción con el mensaje "La solicitud no está aprobada".
+
+2. **Registro del Pedido de Compras**:
+   - Se inserta un nuevo registro en la tabla `Pedidos_Compras` con el `ID_Solicitud`, la fecha actual, y el `ID_Empleado_Compras`.
+
+3. **Cálculo de Materiales Faltantes**:
+   - Se calcula la cantidad de materiales faltantes para cada material solicitado en función del stock disponible en centros clasificados como "Depósito".
+   - Solo se incluye en el pedido de compras la cantidad faltante, es decir, la diferencia entre la cantidad solicitada y la cantidad disponible en depósitos.
+
+4. **Inserción de Detalles del Pedido de Compras**:
+   - Se insertan los detalles del pedido de compras en la tabla `Detalle_Pedidos_Compras`, especificando el material y la cantidad faltante para cada material que no esté completamente disponible en los depósitos.
+
+### Excepciones
+- El procedimiento lanza una excepción si la solicitud no está aprobada.
+- Si se proporcionan datos inválidos o inconsistentes, el procedimiento puede fallar y registrar el error correspondiente.
+
+### Ejemplo de Uso
+
+```sql
+CALL SP_GenerarPedidoCompras(
+    10,    -- ID de la solicitud aprobada
+    3       -- ID del empleado de compras
+);
+```
+Este procedimiento es crucial para gestionar eficientemente los pedidos de materiales, asegurando que solo se compren materiales que realmente se necesitan y no están disponibles en los depósitos.
+
+# Triggers en la Base de Datos
+
+## 1. Trigger_ValidarEstadoSolicitud
+
+### Descripción
+Este trigger se activa antes de insertar un nuevo registro en la tabla `Autorizaciones` y valida que el estado de la solicitud correspondiente sea 'Pendiente'.
+
+### Propósito
+Garantizar que solo se puedan autorizar solicitudes que estén en estado 'Pendiente'.
+
+## 2. Trigger_ActualizarEstadoSolicitudAprobada
+
+### Descripción
+Este trigger se activa después de insertar un registro en Autorizaciones y actualiza el estado de la solicitud a 'Aprobada' si la autorización fue aprobada.
+
+### Propósito
+Automatizar la actualización del estado de las solicitudes cuando se aprueban las autorizaciones.
+
+## 3. Trigger_VerificarMovimientoMaquinas
+
+### Descripción
+Este trigger se activa antes de insertar un registro en Almacenes_Maquinas y verifica la disponibilidad de stock para movimientos de salida o transferencia de máquinas.
+
+### Propósito
+Asegurar que las máquinas solo se transfieran o salgan si hay suficiente stock disponible y evitar duplicación de máquinas en distintos centros.
+
+## 4. Trigger_VerificarIngresoMaquinas
+
+### Descripción
+Este trigger se activa antes de insertar un registro en Almacenes_Maquinas y asegura que una máquina no sea registrada en más de un centro.
+
+### Propósito
+Evitar duplicidad de registros de máquinas en distintos centros.
+
+## 5. Trigger_VerificarSalidaTransferenciaMaquinas
+
+### Descripción
+Este trigger se activa antes de insertar un registro en Detalle_Movimientos para verificar que haya suficiente stock de máquinas en el centro de origen antes de una salida o transferencia.
+
+### Propósito
+Asegurar que no se intenten salidas o transferencias con stock insuficiente.
+
+## 6. Trigger_VerificarMovimientoMateriales
+### Descripción
+Este trigger se activa antes de insertar un registro en Almacenes_Materiales para verificar la disponibilidad de stock para movimientos de salida o transferencia de materiales.
+
+### Propósito
+Garantizar que los movimientos de salida o transferencia de materiales se realicen solo si hay suficiente stock disponible.
+
+## 7. Trigger_VerificarDetalleMovimientoMateriales
+
+### Descripción
+Este trigger se activa antes de insertar un registro en Detalle_Movimientos para verificar que haya suficiente stock de materiales en el centro de origen antes de una salida o transferencia.
+
+### Propósito
+Asegurar que no se intenten salidas o transferencias de materiales con stock insuficiente o inexistente.

@@ -1,6 +1,6 @@
 USE CentroLogistico;
 
--- Aprueba o rechaza una solicitud de materiales o máquinas
+-- 1. Aprueba o rechaza una solicitud de materiales o máquinas
 DROP PROCEDURE IF EXISTS SP_AprobarORechazarSolicitud;
 DELIMITER //
 
@@ -33,7 +33,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- Registra una nueva solicitud
+-- 2. Registra una nueva solicitud
 DROP PROCEDURE IF EXISTS SP_CrearSolicitud;
 DELIMITER //
 
@@ -83,7 +83,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- Procedimiento para registrar la salida de materiales y máquinas
+-- 3. Procedimiento para registrar la salida de materiales y máquinas
 DROP PROCEDURE IF EXISTS SP_RegistrarSalida;
 DELIMITER //
 
@@ -124,7 +124,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- Registrar entrada de materiales o maquinas a un centro
+-- 4. Registrar entrada de materiales o maquinas a un centro
 DROP PROCEDURE IF EXISTS SP_RegistrarEntrada;
 DELIMITER //
 
@@ -166,20 +166,24 @@ BEGIN
 END //
 DELIMITER ;
 
--- realizar movimiento una vez tengo solicitud aprobada
+-- 5. Realizar movimiento una vez tengo solicitud aprobada
 DROP PROCEDURE IF EXISTS SP_RealizarMovimiento;
 DELIMITER //
 
 CREATE PROCEDURE SP_RealizarMovimiento(
     IN p_ID_Solicitud INT,
     IN p_ID_Empleado INT,
-    IN p_ID_Centro_Origen INT
+    IN p_ID_Centro_Origen INT,
+    IN p_Materiales JSON, -- JSON con pares {ID_Material:, Cantidad:}
+    IN p_Maquinas JSON    -- JSON con par {ID_Material:}
 )
 BEGIN
     DECLARE v_ID_Centro_Destino INT;
-    DECLARE v_Tipo ENUM('Material', 'Maquina');
-    DECLARE v_Cantidad INT;
     DECLARE v_ID_Movimiento INT;
+    DECLARE v_Cantidad INT;
+    DECLARE v_ID_Material INT;
+    DECLARE v_ID_Maquina INT;
+    DECLARE v_Indice INT DEFAULT 0;
 
     -- Obtener el centro de destino de la solicitud
     SELECT ID_Centro INTO v_ID_Centro_Destino
@@ -199,63 +203,44 @@ BEGIN
     SET v_ID_Movimiento = LAST_INSERT_ID();
 
     -- Procesar los materiales
-    INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Material, Cantidad)
-    SELECT 
-        v_ID_Movimiento,
-        am_origen.ID_Almacen_Material AS ID_Almacen_Origen,
-        am_destino.ID_Almacen_Material AS ID_Almacen_Destino,
-        ds.ID_Material,
-        ds.Cantidad
-    FROM Detalle_Solicitudes ds
-    JOIN Almacenes_Materiales am_origen ON am_origen.ID_Centro = p_ID_Centro_Origen AND am_origen.ID_Material = ds.ID_Material
-    LEFT JOIN Almacenes_Materiales am_destino ON am_destino.ID_Centro = v_ID_Centro_Destino AND am_destino.ID_Material = ds.ID_Material
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Material';
+    WHILE v_Indice < JSON_LENGTH(p_Materiales) DO
+        SET v_ID_Material = JSON_UNQUOTE(JSON_EXTRACT(p_Materiales, CONCAT('$[', v_Indice, '].ID_Material')));
+        SET v_Cantidad = JSON_UNQUOTE(JSON_EXTRACT(p_Materiales, CONCAT('$[', v_Indice, '].Cantidad')));
+        
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Material, Cantidad)
+        SELECT 
+            v_ID_Movimiento,
+            am.ID_Almacen_Material AS ID_Almacen_Origen,
+            NULL AS ID_Almacen_Destino,
+            v_ID_Material,
+            v_Cantidad
+        FROM Almacenes_Materiales am
+        WHERE am.ID_Centro = p_ID_Centro_Origen AND am.ID_Material = v_ID_Material;
 
-    -- Actualizar el stock de materiales en el centro de origen y destino
-    UPDATE Almacenes_Materiales am
-    JOIN Detalle_Solicitudes ds ON am.ID_Centro = p_ID_Centro_Origen AND am.ID_Material = ds.ID_Material
-    SET am.Cantidad = am.Cantidad - ds.Cantidad
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Material';
-
-    INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
-    SELECT v_ID_Centro_Destino, ds.ID_Material, ds.Cantidad
-    FROM Detalle_Solicitudes ds
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Material'
-    ON DUPLICATE KEY UPDATE Cantidad = Cantidad + VALUES(Cantidad);
+        SET v_Indice = v_Indice + 1;
+    END WHILE;
 
     -- Procesar las máquinas
-    DELETE am
-    FROM Almacenes_Maquinas am
-    JOIN Detalle_Solicitudes ds ON am.ID_Centro = p_ID_Centro_Origen AND am.ID_Maquina = ds.ID_Maquina
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Maquina';
+    SET v_Indice = 0;
+    WHILE v_Indice < JSON_LENGTH(p_Maquinas) DO
+        SET v_ID_Maquina = JSON_UNQUOTE(JSON_EXTRACT(p_Maquinas, CONCAT('$[', v_Indice, '].ID_Maquina')));
+        
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
+        SELECT 
+            v_ID_Movimiento,
+            am.ID_Almacen_Maquina AS ID_Almacen_Origen,
+            NULL AS ID_Almacen_Destino,
+            v_ID_Maquina
+        FROM Almacenes_Maquinas am
+        WHERE am.ID_Centro = p_ID_Centro_Origen AND am.ID_Maquina = v_ID_Maquina;
 
-    INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
-    SELECT v_ID_Centro_Destino, ds.ID_Maquina
-    FROM Detalle_Solicitudes ds
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Maquina';
-
-    -- Registrar el detalle del movimiento para máquinas
-    INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
-    SELECT 
-        v_ID_Movimiento,
-        am_origen.ID_Almacen_Maquina AS ID_Almacen_Origen,
-        am_destino.ID_Almacen_Maquina AS ID_Almacen_Destino,
-        ds.ID_Maquina
-    FROM Detalle_Solicitudes ds
-    LEFT JOIN Almacenes_Maquinas am_origen ON am_origen.ID_Centro = p_ID_Centro_Origen AND am_origen.ID_Maquina = ds.ID_Maquina
-    LEFT JOIN Almacenes_Maquinas am_destino ON am_destino.ID_Centro = v_ID_Centro_Destino AND am_destino.ID_Maquina = ds.ID_Maquina
-    WHERE ds.ID_Solicitud = p_ID_Solicitud
-    AND ds.Tipo = 'Maquina';
+        SET v_Indice = v_Indice + 1;
+    END WHILE;
 
 END //
 DELIMITER ;
 
---  generar pedido de compras desde una solicitud aprobada
+--  6. generar pedido de compras desde una solicitud aprobada
 DROP PROCEDURE IF EXISTS SP_GenerarPedidoCompras;
 DELIMITER //
 
@@ -287,7 +272,9 @@ BEGIN
     FROM Detalle_Solicitudes ds
     LEFT JOIN (
         SELECT ID_Material, SUM(Cantidad) AS TotalDisponible
-        FROM Almacenes_Materiales
+        FROM Almacenes_Materiales am
+        JOIN Centros c ON am.ID_Centro = c.ID_Centro
+        WHERE c.Tipo = 'Deposito'
         GROUP BY ID_Material
     ) am ON ds.ID_Material = am.ID_Material
     WHERE ds.ID_Solicitud = ID_Solicitud
