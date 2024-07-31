@@ -251,11 +251,7 @@ Muestra las máquinas disponibles en un centro específico clasificado como dep�
 ### Uso:
 Esta vista es útil para consultar el inventario de máquinas en los centros de depósito, ayudando en la planificación y gestión de los recursos disponibles.
 ```sql
-<<<<<<< HEAD
-SELECT * FROM Vista_Movimientos;
-=======
 SELECT * FROM Vista_Maquinas_Centro;
->>>>>>> 38c0816 (modified)
 ```
 
 ### 4. Vista_Movimientos
@@ -301,10 +297,7 @@ Esta vista permite consultar la información detallada de todas las solicitudes 
 ```sql
 SELECT * FROM Vista_Solicitudes;
 ```
-<<<<<<< HEAD
-=======
 
->>>>>>> 38c0816 (modified)
 ## Funciones
 
 ### 1. Funcion_ObtenerEstadoMaquina
