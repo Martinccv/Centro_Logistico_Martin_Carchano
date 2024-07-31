@@ -34,9 +34,9 @@ Jose Martinez,Jefe de Obra,2345678901,15,Obra
 Laura Fernandez,Ingeniera de Proyecto,3456789012,15,Obra
 Daniela Rivas,Supervisor,4567890123,15,Obra
 Oscar Diaz,Obrero,5678901234,15,Obra
-Claudia Vargas,Jefe de Deposito,6789012345,16,Deposito
-Emilio Romero,Operador de Grua,7890123456,16,Deposito
-Veronica Martinez,Auxiliar de Deposito,8901234567,16,Deposito
+Claudia Vargas,Jefe de Deposito,6789012345,7,Deposito
+Emilio Romero,Operador de Grua,7890123456,7,Deposito
+Veronica Martinez,Auxiliar de Deposito,8901234567,7,Deposito
 Juan Fernandez,Jefe de Compras,9012345678,,Compras
 Patricia López,Comprador,0123456789,,Compras
 Andres Ruiz,Asistente de Compras,1234567890,,Compras

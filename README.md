@@ -404,29 +404,7 @@ CALL SP_CrearSolicitud('Material', 1, 3, 3, '[{"ID_Item": 5, "Cantidad": 10}]');
 ```
 Este ejemplo crea una solicitud de materiales para el cliente con ID_Cliente igual a 1, el empleado con ID_Empleado igual a 202, en el centro con ID_Centro igual a 303, solicitando 10 unidades del material con ID_Item igual a 5.
 
-## 3. SP_RegistrarSalida
-
-### Descripción:
-Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
-
-### Parámetros:
-
-p_Tipo: ENUM('Material', 'Maquina') — Tipo de ítem. Puede ser 'Material' o 'Maquina'.
-p_ID_Centro: INT — Identificador del centro del que se realiza la salida.
-p_ID_Item: INT — Identificador del material o máquina que se está retirando.
-p_Cantidad: INT — Cantidad del material a retirar. Ignorado para máquinas.
-p_ID_Empleado: INT — Identificador del empleado que realiza la salida.
-### Valor Retornado:
-Ninguno.
-
-### Ejemplo de Uso:
-
-```sql
-CALL SP_RegistrarSalida('Material', 3, 2, 10, 8);
-```
-Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
-
-## 4. SP_RegistrarIngreso
+## 3. SP_RegistrarIngreso
 
 ### Descripción:
 Registra el ingreso de materiales o máquinas a un centro. Crea un registro en la tabla Movimientos y actualiza o inserta en la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
@@ -444,8 +422,30 @@ Ninguno.
 ### Ejemplo de Uso:
 
 ```sql
-CALL SP_RegistrarIngreso('Material', 3, 5,1, 2);
+CALL SP_RegistrarEntrada('Material', 3, 5, 1, 2);
 ```
+## 4. SP_RegistrarSalida
+
+### Descripción:
+Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
+
+### Parámetros:
+
+p_Tipo: ENUM('Material', 'Maquina') — Tipo de ítem. Puede ser 'Material' o 'Maquina'.
+p_ID_Centro: INT — Identificador del centro del que se realiza la salida.
+p_ID_Item: INT — Identificador del material o máquina que se está retirando.
+p_Cantidad: INT — Cantidad del material a retirar. Ignorado para máquinas.
+p_ID_Empleado: INT — Identificador del empleado que realiza la salida.
+### Valor Retornado:
+Ninguno.
+
+### Ejemplo de Uso:
+
+```sql
+CALL SP_RegistrarSalida('Material', 3, 5, 1, 2);
+```
+Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
+
 ## 5. SP_RealizarMovimiento
 
 ### Propósito
@@ -509,13 +509,7 @@ Si se proporcionan datos inválidos o inconsistentes, el procedimiento puede fal
 
 ### Ejemplo de Uso
 ```sql
-    CALL SP_RealizarMovimiento(
-    1,                -- ID de la solicitud aprobada
-    5,                  -- ID del empleado que registra el movimiento
-    1,                  -- ID del centro de origen
-    '[{"ID_Material": 1, "Cantidad": 50}, {"ID_Material": 2, "Cantidad": 20}]', -- Materiales a mover
-    '[{"ID_Maquina": 3}, {"ID_Maquina": 4}]' -- Máquinas a mover
-    );
+    CALL SP_RealizarMovimiento(2, 5, 1,'[{"ID_Material": 1, "Cantidad": 50}, {"ID_Material": 2, "Cantidad": 20}]');
 ```
 
 Este procedimiento debe ejecutarse con los permisos adecuados para modificar las tablas Movimientos, Detalle_Movimientos, Almacenes_Materiales, y Almacenes_Maquinas.

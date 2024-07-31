@@ -16,7 +16,7 @@ BEGIN
     IF p_Accion = 'Aprobada' OR p_Accion = 'Rechazada' THEN
         SET v_Accion_Valida = TRUE;
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Acción no válida. Debe ser "Aprobar" o "Rechazar".';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Acción no válida. Debe ser "Aprobada" o "Rechazada".';
     END IF;
 
     -- Crear o actualizar una autorización en la tabla Autorizaciones
@@ -82,8 +82,48 @@ BEGIN
 
 END //
 DELIMITER ;
+-- 3. Registrar entrada de materiales o maquinas a un centro
+DROP PROCEDURE IF EXISTS SP_RegistrarEntrada;
+DELIMITER //
 
--- 3. Procedimiento para registrar la salida de materiales y máquinas
+CREATE PROCEDURE SP_RegistrarEntrada(
+    IN p_Tipo ENUM('Material', 'Maquina'),
+    IN p_ID_Centro INT,
+    IN p_ID_Item INT,
+    IN p_Cantidad INT,
+    IN p_ID_Empleado INT
+)
+BEGIN
+    DECLARE v_ID_Movimiento INT;
+
+    -- Registrar el movimiento en la tabla 'Movimientos'
+    INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
+    VALUES (CURDATE(), 'Entrada', p_ID_Empleado);
+
+    -- Obtener el ID del movimiento recién creado
+    SET v_ID_Movimiento = LAST_INSERT_ID();
+
+    IF p_Tipo = 'Material' THEN
+        -- Registrar el detalle del movimiento para Materiales con cantidad positiva
+        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+        VALUES (p_ID_Centro, p_ID_Item, p_Cantidad);
+        
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Material)
+        VALUES (v_ID_Movimiento, p_ID_Centro, p_Cantidad, p_ID_Item);
+    ELSE
+        -- Registrar el detalle del movimiento para Maquinas
+        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
+        VALUES (p_ID_Centro, p_ID_Item);
+
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
+        VALUES (v_ID_Movimiento, p_ID_Centro, 1, p_ID_Item);
+    END IF;
+END //
+DELIMITER ;
+
+-- 4. Procedimiento para registrar la salida de materiales y máquinas
 DROP PROCEDURE IF EXISTS SP_RegistrarSalida;
 DELIMITER //
 
@@ -115,53 +155,11 @@ BEGIN
     ELSE
         -- Registrar el detalle del movimiento para Maquinas con cantidad negativa
         INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina, Cantidad)
-        VALUES (p_ID_Centro, p_ID_Item, -1); -- Asumiendo que se maneja de a una máquina
+        VALUES (p_ID_Centro, p_ID_Item, -1); -- se maneja de a una máquina
 
         -- Registrar el detalle del movimiento en Detalle_Movimientos
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
         VALUES (v_ID_Movimiento, p_ID_Centro, -1, p_ID_Item);
-    END IF;
-END //
-DELIMITER ;
-
--- 4. Registrar entrada de materiales o maquinas a un centro
-DROP PROCEDURE IF EXISTS SP_RegistrarEntrada;
-DELIMITER //
-
-CREATE PROCEDURE SP_RegistrarEntrada(
-    IN p_Tipo ENUM('Material', 'Maquina'),
-    IN p_ID_Centro INT,
-    IN p_ID_Item INT,
-    IN p_Cantidad INT,
-    IN p_ID_Empleado INT
-)
-BEGIN
-    DECLARE v_ID_Movimiento INT;
-
-    -- Registrar el movimiento en la tabla 'Movimientos'
-    INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
-    VALUES (CURDATE(), 'Entrada', p_ID_Empleado);
-
-    -- Obtener el ID del movimiento recién creado
-    SET v_ID_Movimiento = LAST_INSERT_ID();
-
-    IF p_Tipo = 'Material' THEN
-        -- Registrar el detalle del movimiento para Materiales con cantidad positiva
-        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
-        VALUES (p_ID_Centro, p_ID_Item, p_Cantidad);
-        
-        -- Registrar el detalle del movimiento en Detalle_Movimientos
-        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Material)
-        VALUES (v_ID_Movimiento, p_ID_Centro, p_Cantidad, p_ID_Item);
-    ELSE
-        -- Registrar el detalle del movimiento para Maquinas
-        -- Asumimos que en `Almacenes_Maquinas` no se maneja el campo `Cantidad`, sino que es 1 por máquina
-        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
-        VALUES (p_ID_Centro, p_ID_Item);
-
-        -- Registrar el detalle del movimiento en Detalle_Movimientos
-        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
-        VALUES (v_ID_Movimiento, p_ID_Centro, 1, p_ID_Item);
     END IF;
 END //
 DELIMITER ;

@@ -82,7 +82,7 @@ CREATE TABLE Almacenes_Maquinas (
     ID_Almacen_Maquina INT AUTO_INCREMENT PRIMARY KEY,
     ID_Centro INT NOT NULL,
     ID_Maquina INT,
-    Cantidad INT NOT NULL
+    Cantidad INT NOT NULL DEFAULT 1
 );
 
 -- Tabla de Solicitudes
