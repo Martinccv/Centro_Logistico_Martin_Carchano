@@ -234,6 +234,9 @@ Muestra los materiales disponibles en un centro específico que está clasificad
 - Cantidad: Cantidad disponible del material en el centro.
 ### Uso:
 Esta vista permite a los usuarios consultar rápidamente los materiales disponibles en centros clasificados como depósitos, facilitando la gestión de inventario y el seguimiento de existencias.
+```sql
+SELECT * FROM Vista_Materiales_Centro;
+```
 
 ### 3. Vista_Maquinas_Centro
 ### Descripción:
@@ -248,7 +251,11 @@ Muestra las máquinas disponibles en un centro específico clasificado como dep�
 ### Uso:
 Esta vista es útil para consultar el inventario de máquinas en los centros de depósito, ayudando en la planificación y gestión de los recursos disponibles.
 ```sql
+<<<<<<< HEAD
 SELECT * FROM Vista_Movimientos;
+=======
+SELECT * FROM Vista_Maquinas_Centro;
+>>>>>>> 38c0816 (modified)
 ```
 
 ### 4. Vista_Movimientos
@@ -294,9 +301,13 @@ Esta vista permite consultar la información detallada de todas las solicitudes 
 ```sql
 SELECT * FROM Vista_Solicitudes;
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> 38c0816 (modified)
 ## Funciones
 
-### 1. fn_ObtenerEstadoMaquina
+### 1. Funcion_ObtenerEstadoMaquina
 ### Descripción:
 Devuelve el estado de una máquina específica en función de su identificador.
 
@@ -309,11 +320,11 @@ VARCHAR(50) — Estado de la máquina.
 ### Ejemplo de Uso:
 
 ```sql
-SELECT fn_ObtenerEstadoMaquina(1);
+SELECT Funcion_ObtenerEstadoMaquina(1);
 ```
 Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
 
-### 2. ObtenerCantidadMaterialPorCentro
+### 2. Funcion_ObtenerCantidadMaterialPorCentro
 ### Descripción:
 Verifica y devuelve la cantidad de un material específico en todos los centros. La función utiliza un cursor para iterar sobre los centros y concatenar los resultados en una cadena de texto.
 
@@ -326,11 +337,11 @@ TEXT — Una cadena de texto que enumera cada centro y la cantidad del material 
 ### Ejemplo de Uso:
 
 ```sql
-SELECT ObtenerCantidadMaterialPorCentro(5);
+SELECT Funcion_ObtenerCantidadMaterialPorCentro(5);
 ```
 Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
 
-### 3. ObtenerCantidadMaterialCentro
+### 3. Funcion_ObtenerCantidadMaterialCentro
 ### Descripción:
 Calcula y devuelve la cantidad de un material específico en un centro determinado. Si el material no está disponible en el centro, la función retorna 0.
 
@@ -344,16 +355,13 @@ INT — Cantidad del material en el centro. Retorna 0 si el material no está pr
 ### Ejemplo de Uso:
 
 ```sql
-SELECT ObtenerCantidadMaterialCentro(3, 5);
+SELECT Funcion_ObtenerCantidadMaterialCentro(2, 2);
 ```
 Este ejemplo devolverá la cantidad del material con ID_Material igual a 5 en el centro con ID_Centro igual a 3.
   
-### Triggers
-- Trigger para actualizar el inventario de materiales al realizar un movimiento.
-- Trigger para notificar a los empleados de compras cuando una solicitud no puede ser completamente satisfecha.
 ## Stored Procedures
 
-### 1. `sp_AprobarORechazarSolicitud`
+### 1. SP_AprobarORechazarSolicitud
 
 ### Descripción:
 Aprueba o rechaza una solicitud de materiales o máquinas. Actualiza el estado en las tablas `Autorizaciones` y `Solicitudes`.
@@ -368,11 +376,11 @@ Ninguno.
 
 ### Ejemplo de Uso:
 ```sql
-CALL sp_AprobarORechazarSolicitud(1, 101, 'Aprobar');
+CALL SP_AprobarORechazarSolicitud(1,1, 'Aprobar');
 ```
 Este ejemplo aprueba la solicitud con ID_Solicitud igual a 1 por parte del socio gerente con ID_Socio_Gerente igual a 101.
 
-### 2. CrearSolicitud
+### 2. SP_CrearSolicitud
 ### Descripción:
 Registra una nueva solicitud de materiales o máquinas. Crea una entrada en la tabla Solicitudes y añade detalles a Detalle_Solicitudes a partir de un JSON que contiene los elementos y cantidades.
 
@@ -389,11 +397,11 @@ Ninguno.
 ### Ejemplo de Uso:
 
 ```sql
-CALL CrearSolicitud('Material', 1, 202, 303, '[{"ID_Item": 5, "Cantidad": 10}]');
+CALL SP_CrearSolicitud('Material', 1, 3, 3, '[{"ID_Item": 5, "Cantidad": 10}]');
 ```
 Este ejemplo crea una solicitud de materiales para el cliente con ID_Cliente igual a 1, el empleado con ID_Empleado igual a 202, en el centro con ID_Centro igual a 303, solicitando 10 unidades del material con ID_Item igual a 5.
 
-### 3. RegistrarSalida
+### 3. SP_RegistrarSalida
 ### Descripción:
 Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
 
@@ -410,11 +418,11 @@ Ninguno.
 ### Ejemplo de Uso:
 
 ```sql
-CALL RegistrarSalida('Material', 303, 5, 10, 202);
+CALL SP_RegistrarSalida('Material', 3, 2, 10, 8);
 ```
 Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
 
-### 4. RegistrarIngreso
+### 4. SP_RegistrarIngreso
 ### Descripción:
 Registra el ingreso de materiales o máquinas a un centro. Crea un registro en la tabla Movimientos y actualiza o inserta en la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
 
@@ -431,6 +439,6 @@ Ninguno.
 ### Ejemplo de Uso:
 
 ```sql
-CALL RegistrarIngreso('Material', 3, 5, 20, 2);
+CALL SP_RegistrarIngreso('Material', 3, 5,1, 2);
 ```
 Este ejemplo registra el ingreso de 20 unidades del material con ID_Material igual a 5 al centro con ID_Centro igual a 303, realizado por el empleado con ID_Empleado igual a 202.

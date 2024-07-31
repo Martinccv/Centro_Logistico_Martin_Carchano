@@ -1,9 +1,9 @@
 USE CentroLogistico;
 
 -- Lista de solicitudes pendientes de aprobación.
-DROP VIEW IF EXISTS vw_SolicitudesPendientes;
+DROP VIEW IF EXISTS Vista_SolicitudesPendientes;
 
-CREATE VIEW vw_SolicitudesPendientes AS
+CREATE VIEW Vista_SolicitudesPendientes AS
 SELECT s.ID_Solicitud, c.Nombre AS Cliente, e.Nombre AS Empleado, s.Tipo, s.Estado
 FROM Solicitudes s
 LEFT JOIN Clientes c ON s.ID_Cliente = c.ID_Cliente
@@ -11,9 +11,9 @@ LEFT JOIN Empleados e ON s.ID_Empleado = e.ID_Empleado
 WHERE s.Estado = 'Pendiente';
 
 -- Muestra los materiales disponibles en un Centro específico clasificado como depósito
-DROP VIEW IF EXISTS Vista_Materiales_Centro;
+DROP VIEW IF EXISTS Vista_Materiales_Deposito;
 
-CREATE VIEW Vista_Materiales_Centro AS
+CREATE VIEW Vista_Materiales_Deposito AS
 SELECT 
     C.Nombre AS Nombre_Centro,
     M.Nombre AS Nombre_Material,
@@ -28,9 +28,9 @@ WHERE
     C.Tipo = 'Deposito'; -- Filtra por centros clasificados como depósito
 
 -- Muestra las máquinas disponibles en un Centro específico clasificado como depósito
-DROP VIEW IF EXISTS Vista_Maquinas_Centro;
+DROP VIEW IF EXISTS Vista_Maquinas_Deposito;
 
-CREATE VIEW Vista_Maquinas_Centro AS
+CREATE VIEW Vista_Maquinas_Deposito AS
 SELECT 
     C.Nombre AS Nombre_Centro,
     Maq.Nombre AS Nombre_Maquina,
@@ -76,6 +76,7 @@ LEFT JOIN
 
 -- Vista para consultar informacion sobre Solicitudes
 DROP VIEW IF EXISTS Vista_Solicitudes;
+
 CREATE VIEW Vista_Solicitudes AS
 SELECT 
     S.ID_Solicitud,
@@ -106,3 +107,32 @@ LEFT JOIN
     Materiales Mat ON DS.ID_Material = Mat.ID_Material
 LEFT JOIN 
     Maquinas Maq ON DS.ID_Maquina = Maq.ID_Maquina;
+
+-- Vista para calcular el stock actual de Materiales
+CREATE OR REPLACE VIEW Stock_Materiales AS
+SELECT 
+    a.ID_Centro,
+    a.ID_Material,
+    m.Nombre AS Nombre_Material,
+    SUM(a.Cantidad) AS Stock_Actual
+FROM 
+    Almacenes_Materiales a
+JOIN
+    Materiales m ON a.ID_Material = m.ID_Material
+GROUP BY 
+    a.ID_Centro, m.Nombre;
+
+
+-- Vista para calcular el stock actual de Máquinas
+CREATE OR REPLACE VIEW Stock_Maquinas AS
+SELECT 
+    a.ID_Centro,
+    a.ID_Maquina,
+    ma.Nombre AS Nombre_Maquina,
+    COUNT(*) AS Stock_Actual
+FROM 
+    Almacenes_Maquinas a
+JOIN
+    Maquinas ma ON a.ID_Maquina = ma.ID_Maquina
+GROUP BY 
+    a.ID_Centro, ma.Nombre;

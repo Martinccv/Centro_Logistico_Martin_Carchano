@@ -81,7 +81,8 @@ CREATE TABLE Almacenes_Materiales (
 CREATE TABLE Almacenes_Maquinas (
     ID_Almacen_Maquina INT AUTO_INCREMENT PRIMARY KEY,
     ID_Centro INT NOT NULL,
-    ID_Maquina INT
+    ID_Maquina INT,
+    Cantidad INT NOT NULL
 );
 
 -- Tabla de Solicitudes
@@ -120,7 +121,7 @@ CREATE TABLE Movimientos (
     Fecha DATE,
     Tipo ENUM('Entrada', 'Salida', 'Transferencia') NOT NULL,
     ID_Empleado INT NOT NULL,
-    ID_Autorizacion INT NOT NULL
+    ID_Autorizacion INT
 );
 
 -- Tabla de Detalle de Movimientos

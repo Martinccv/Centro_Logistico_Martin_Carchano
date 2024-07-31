@@ -1,11 +1,10 @@
 USE CentroLogistico;
 
 -- Devuelve el estado de una máquina específica
-DROP FUNCTION IF EXISTS fn_ObtenerEstadoMaquina;
-
+DROP FUNCTION IF EXISTS Funcion_ObtenerEstadoMaquina;
 DELIMITER //
 
-CREATE FUNCTION fn_ObtenerEstadoMaquina (ID_Maquina INT)
+CREATE FUNCTION Funcion_ObtenerEstadoMaquina (ID_Maquina INT)
 RETURNS VARCHAR(50)
 DETERMINISTIC
 BEGIN
@@ -15,13 +14,13 @@ BEGIN
     WHERE m.ID_Maquina = ID_Maquina;
     RETURN Estado;
 END //
-
 DELIMITER ;
 
 -- Obtiene la cantidad de material que se elige por cada centro
+DROP FUNCTION IF EXISTS Funcion_ObtenerCantidadMaterialPorCentro;
 DELIMITER //
 
-CREATE FUNCTION ObtenerCantidadMaterialPorCentro(
+CREATE FUNCTION Funcion_ObtenerCantidadMaterialPorCentro(
     p_ID_Material INT
 ) RETURNS TEXT
 READS SQL DATA
@@ -36,15 +35,14 @@ BEGIN
 
     RETURN resultado;
 END //
-
 DELIMITER ;
 
 
 -- Calcula el total de materiales asignados a una Centro en especifico
-DROP FUNCTION IF EXISTS ObtenerCantidadMaterialCentro;
+DROP FUNCTION IF EXISTS Funcion_ObtenerCantidadMaterialCentro;
 DELIMITER //
 
-CREATE FUNCTION ObtenerCantidadMaterialCentro(
+CREATE FUNCTION Funcion_ObtenerCantidadMaterialCentro(
     centro_id INT,
     material_id INT
 ) RETURNS INT
@@ -62,8 +60,5 @@ BEGIN
     ELSE
         RETURN cantidad;
     END IF;
-END;
-
-//
-
+END; //
 DELIMITER ;

@@ -1,44 +1,43 @@
 USE CentroLogistico;
 
 -- Aprueba o rechaza una solicitud de materiales o máquinas
-DROP PROCEDURE IF EXISTS sp_AprobarORechazarSolicitud;
-
+DROP PROCEDURE IF EXISTS SP_AprobarORechazarSolicitud;
 DELIMITER //
 
-CREATE PROCEDURE sp_AprobarORechazarSolicitud(
+CREATE PROCEDURE SP_AprobarORechazarSolicitud(
     IN p_ID_Solicitud INT,
     IN p_ID_Socio_Gerente INT,
-    IN p_Accion VARCHAR(10) -- 'Aprobar' o 'Rechazar'
+    IN p_Accion VARCHAR(10) -- 'Aprobada' o 'Rechazada'
 )
 BEGIN
-    IF p_Accion = 'Aprobar' THEN
-        UPDATE Autorizaciones
-        SET Estado = 'Aprobada', Fecha = NOW()
-        WHERE ID_Solicitud = p_ID_Solicitud AND ID_Socio_Gerente = p_ID_Socio_Gerente;
+    DECLARE v_Accion_Valida BOOLEAN DEFAULT FALSE;
 
-        UPDATE Solicitudes
-        SET Estado = 'Aprobada'
-        WHERE ID_Solicitud = p_ID_Solicitud;
-    ELSEIF p_Accion = 'Rechazar' THEN
-        UPDATE Autorizaciones
-        SET Estado = 'Rechazada', Fecha = NOW()
-        WHERE ID_Solicitud = p_ID_Solicitud AND ID_Socio_Gerente = p_ID_Socio_Gerente;
-
-        UPDATE Solicitudes
-        SET Estado = 'Rechazada'
-        WHERE ID_Solicitud = p_ID_Solicitud;
+    -- Comprobar si la acción es válida
+    IF p_Accion = 'Aprobada' OR p_Accion = 'Rechazada' THEN
+        SET v_Accion_Valida = TRUE;
     ELSE
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Acción no válida. Debe ser "Aprobar" o "Rechazar".';
     END IF;
-END //
 
+    -- Crear o actualizar una autorización en la tabla Autorizaciones
+    IF v_Accion_Valida THEN
+        INSERT INTO Autorizaciones (ID_Solicitud, ID_Socio_Gerente, Estado, Fecha)
+        VALUES (p_ID_Solicitud, p_ID_Socio_Gerente, p_Accion, NOW())
+        ON DUPLICATE KEY UPDATE Estado = p_Accion, Fecha = NOW();
+
+        -- Actualizar el estado de la solicitud en la tabla Solicitudes
+        UPDATE Solicitudes
+        SET Estado = p_Accion
+        WHERE ID_Solicitud = p_ID_Solicitud;
+    END IF;
+END //
 DELIMITER ;
 
 -- Registra una nueva solicitud
-DROP PROCEDURE IF EXISTS CrearSolicitud;
+DROP PROCEDURE IF EXISTS SP_CrearSolicitud;
 DELIMITER //
 
-CREATE PROCEDURE CrearSolicitud(
+CREATE PROCEDURE SP_CrearSolicitud(
     IN p_Tipo ENUM('Material', 'Maquina'),
     IN p_ID_Cliente INT,
     IN p_ID_Empleado INT,
@@ -82,17 +81,13 @@ BEGIN
     END WHILE;
 
 END //
-
 DELIMITER ;
 
-USE CentroLogistico;
-
 -- Procedimiento para registrar la salida de materiales y máquinas
-DROP PROCEDURE IF EXISTS RegistrarSalida;
-
+DROP PROCEDURE IF EXISTS SP_RegistrarSalida;
 DELIMITER //
 
-CREATE PROCEDURE RegistrarSalida(
+CREATE PROCEDURE SP_RegistrarSalida(
     IN p_Tipo ENUM('Material', 'Maquina'),
     IN p_ID_Centro INT,
     IN p_ID_Item INT,
@@ -101,8 +96,7 @@ CREATE PROCEDURE RegistrarSalida(
 )
 BEGIN
     DECLARE v_ID_Movimiento INT;
-    DECLARE v_ID_Almacen_Origen INT;
-
+    
     -- Registrar el movimiento en la tabla 'Movimientos'
     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
     VALUES (CURDATE(), 'Salida', p_ID_Empleado);
@@ -110,64 +104,31 @@ BEGIN
     -- Obtener el ID del movimiento recién creado
     SET v_ID_Movimiento = LAST_INSERT_ID();
 
-    -- Verificar el tipo de ítem y registrar la salida
     IF p_Tipo = 'Material' THEN
-        -- Verificar si el material existe en el centro
-        IF EXISTS (
-            SELECT 1 FROM Almacenes_Materiales 
-            WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item
-        ) THEN
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Material FROM Almacenes_Materiales 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item);
-            
-            -- Actualizar la cantidad existente
-            UPDATE Almacenes_Materiales
-            SET Cantidad = Cantidad - p_Cantidad
-            WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item;
-
-            -- Eliminar el registro si la cantidad llega a cero o menos
-            DELETE FROM Almacenes_Materiales
-            WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item AND Cantidad <= 0;
-
-            -- Registrar el detalle del movimiento
-            INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, Cantidad, ID_Material)
-            VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_Cantidad, p_ID_Item);
-
-        ELSE
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El material no está registrado en el centro.';
-        END IF;
+        -- Registrar el detalle del movimiento para Materiales con cantidad negativa
+        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+        VALUES (p_ID_Centro, p_ID_Item, -p_Cantidad);
+        
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Material)
+        VALUES (v_ID_Movimiento, p_ID_Centro, -p_Cantidad, p_ID_Item);
     ELSE
-        -- Procesar máquinas
-        -- Verificar si la máquina existe en el centro
-        IF EXISTS (
-            SELECT 1 FROM Almacenes_Maquinas 
-            WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item
-        ) THEN
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item);
+        -- Registrar el detalle del movimiento para Maquinas con cantidad negativa
+        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina, Cantidad)
+        VALUES (p_ID_Centro, p_ID_Item, -1); -- Asumiendo que se maneja de a una máquina
 
-            -- Eliminar la máquina del centro
-            DELETE FROM Almacenes_Maquinas
-            WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item;
-
-            -- Registrar el detalle del movimiento
-            INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Maquina)
-            VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_ID_Item);
-
-        ELSE
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La máquina no está registrada en el centro.';
-        END IF;
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
+        VALUES (v_ID_Movimiento, p_ID_Centro, -1, p_ID_Item);
     END IF;
 END //
-
 DELIMITER ;
 
--- Procedimiento para registrar el ingreso de materiales y máquinas
+-- Registrar entrada de materiales o maquinas a un centro
+DROP PROCEDURE IF EXISTS SP_RegistrarEntrada;
 DELIMITER //
 
-CREATE PROCEDURE RegistrarIngreso(
+CREATE PROCEDURE SP_RegistrarEntrada(
     IN p_Tipo ENUM('Material', 'Maquina'),
     IN p_ID_Centro INT,
     IN p_ID_Item INT,
@@ -176,7 +137,6 @@ CREATE PROCEDURE RegistrarIngreso(
 )
 BEGIN
     DECLARE v_ID_Movimiento INT;
-    DECLARE v_ID_Almacen_Origen INT;
 
     -- Registrar el movimiento en la tabla 'Movimientos'
     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
@@ -185,78 +145,32 @@ BEGIN
     -- Obtener el ID del movimiento recién creado
     SET v_ID_Movimiento = LAST_INSERT_ID();
 
-    -- Verificar el tipo de ítem y registrar el ingreso
     IF p_Tipo = 'Material' THEN
-        -- Verificar si el material ya existe en el centro
-        IF EXISTS (
-            SELECT 1 FROM Almacenes_Materiales 
-            WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item
-        ) THEN
-            -- Actualizar la cantidad existente
-            UPDATE Almacenes_Materiales
-            SET Cantidad = Cantidad + p_Cantidad
-            WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item;
-
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Material FROM Almacenes_Materiales 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item);
-
-        ELSE
-            -- Insertar el nuevo registro si el material no existe
-            INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
-            VALUES (p_ID_Centro, p_ID_Item, p_Cantidad);
-
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Material FROM Almacenes_Materiales 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Material = p_ID_Item);
-        END IF;
-
-        -- Registrar el detalle del movimiento
-        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, Cantidad, ID_Material)
-        VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_Cantidad, p_ID_Item);
-
-    ELSEIF p_Tipo = 'Maquina' THEN
-        -- Procesar máquinas
-        -- Verificar si la máquina ya existe en el centro
-        IF EXISTS (
-            SELECT 1 FROM Almacenes_Maquinas 
-            WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item
-        ) THEN
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item);
-
-        ELSE
-            -- Insertar el nuevo registro si la máquina no existe
-            INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
-            VALUES (p_ID_Centro, p_ID_Item);
-
-            -- Obtener el ID del almacén
-            SET v_ID_Almacen_Origen = (SELECT ID_Almacen_Maquina FROM Almacenes_Maquinas 
-                                       WHERE ID_Centro = p_ID_Centro AND ID_Maquina = p_ID_Item);
-        END IF;
-
-        -- Registrar el detalle del movimiento
-        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Maquina)
-        VALUES (v_ID_Movimiento, v_ID_Almacen_Origen, p_ID_Item);
-
+        -- Registrar el detalle del movimiento para Materiales con cantidad positiva
+        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+        VALUES (p_ID_Centro, p_ID_Item, p_Cantidad);
+        
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Material)
+        VALUES (v_ID_Movimiento, p_ID_Centro, p_Cantidad, p_ID_Item);
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tipo de ítem inválido';
+        -- Registrar el detalle del movimiento para Maquinas
+        -- Asumimos que en `Almacenes_Maquinas` no se maneja el campo `Cantidad`, sino que es 1 por máquina
+        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
+        VALUES (p_ID_Centro, p_ID_Item);
+
+        -- Registrar el detalle del movimiento en Detalle_Movimientos
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
+        VALUES (v_ID_Movimiento, p_ID_Centro, 1, p_ID_Item);
     END IF;
 END //
-
 DELIMITER ;
 
-
-
 -- realizar movimiento una vez tengo solicitud aprobada
-USE CentroLogistico;
-
-DROP PROCEDURE IF EXISTS RealizarMovimiento;
-
+DROP PROCEDURE IF EXISTS SP_RealizarMovimiento;
 DELIMITER //
 
-CREATE PROCEDURE RealizarMovimiento(
+CREATE PROCEDURE SP_RealizarMovimiento(
     IN p_ID_Solicitud INT,
     IN p_ID_Empleado INT,
     IN p_ID_Centro_Origen INT
@@ -339,14 +253,13 @@ BEGIN
     AND ds.Tipo = 'Maquina';
 
 END //
-
 DELIMITER ;
 
 --  generar pedido de compras desde una solicitud aprobada
-DROP PROCEDURE IF EXISTS GenerarPedidoCompras;
+DROP PROCEDURE IF EXISTS SP_GenerarPedidoCompras;
 DELIMITER //
 
-CREATE PROCEDURE GenerarPedidoCompras(
+CREATE PROCEDURE SP_GenerarPedidoCompras(
     IN ID_Solicitud INT,
     IN ID_Empleado_Compras INT
 )
@@ -381,8 +294,6 @@ BEGIN
       AND ds.ID_Material IS NOT NULL
       AND ds.Cantidad > IFNULL(am.TotalDisponible, 0);
 
-END;
-//
-
+END; //
 DELIMITER ;
 
