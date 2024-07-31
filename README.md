@@ -205,9 +205,8 @@ Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material, relación: * Mat
 
 ## Stored Procedures, Triggers, Vistas y Funciones
 
-
 ## Vistas
-### 1. vw_SolicitudesPendientes
+### 1. Vista_SolicitudesPendientes
 ### Descripción:
 Muestra una lista de todas las solicitudes que están pendientes de aprobación. Incluye detalles sobre la solicitud, el cliente asociado y el empleado que la creó.
 
@@ -220,6 +219,9 @@ Muestra una lista de todas las solicitudes que están pendientes de aprobación.
 - Estado: Estado actual de la solicitud (en este caso, debe ser 'Pendiente').
 ### Uso:
 Esta vista es útil para los gestores y responsables que necesitan revisar y aprobar las solicitudes que están pendientes en el sistema.
+```sql
+SELECT * FROM Vista_SolicitudesPendientes;
+```
 
 ### 2. Vista_Materiales_Centro
 ### Descripción:
@@ -245,6 +247,9 @@ Muestra las máquinas disponibles en un centro específico clasificado como dep�
 - Estado: Estado actual de la máquina (por ejemplo, disponible, en reparación, etc.).
 ### Uso:
 Esta vista es útil para consultar el inventario de máquinas en los centros de depósito, ayudando en la planificación y gestión de los recursos disponibles.
+```sql
+SELECT * FROM Vista_Movimientos;
+```
 
 ### 4. Vista_Movimientos
 ### Descripción:
@@ -263,6 +268,9 @@ Proporciona información detallada sobre los movimientos de materiales y máquin
 - Nombre_Item: Nombre del material o máquina, dependiendo de cuál esté involucrado.
 ### Uso:
 Esta vista es útil para hacer un seguimiento de todos los movimientos de inventario, facilitando la auditoría y el análisis de la gestión de recursos.
+```sql
+SELECT * FROM Vista_Movimientos;
+```
 
 ### 5. Vista_Solicitudes
 ### Descripción:
@@ -283,7 +291,9 @@ Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo,
 - Estado: Estado actual de la solicitud.
 ### Uso:
 Esta vista permite consultar la información detallada de todas las solicitudes en el sistema, facilitando el análisis y seguimiento de las mismas.
-
+```sql
+SELECT * FROM Vista_Solicitudes;
+```
 ## Funciones
 
 ### 1. fn_ObtenerEstadoMaquina
