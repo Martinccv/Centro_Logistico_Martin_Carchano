@@ -109,7 +109,7 @@ LEFT JOIN
     Maquinas Maq ON DS.ID_Maquina = Maq.ID_Maquina;
 
 -- Vista para calcular el stock actual de Materiales
-CREATE OR REPLACE VIEW Stock_Materiales AS
+CREATE OR REPLACE VIEW Vista_Stock_Materiales AS
 SELECT 
     a.ID_Centro,
     a.ID_Material,
@@ -120,11 +120,11 @@ FROM
 JOIN
     Materiales m ON a.ID_Material = m.ID_Material
 GROUP BY 
-    a.ID_Centro, m.Nombre;
+    a.ID_Centro, a.ID_Material, m.Nombre;
 
 
 -- Vista para calcular el stock actual de Máquinas
-CREATE OR REPLACE VIEW Stock_Maquinas AS
+CREATE OR REPLACE VIEW Vista_Stock_Maquinas AS
 SELECT 
     a.ID_Centro,
     a.ID_Maquina,
@@ -135,4 +135,5 @@ FROM
 JOIN
     Maquinas ma ON a.ID_Maquina = ma.ID_Maquina
 GROUP BY 
-    a.ID_Centro, ma.Nombre;
+    a.ID_Centro, a.ID_Maquina, ma.Nombre;
+

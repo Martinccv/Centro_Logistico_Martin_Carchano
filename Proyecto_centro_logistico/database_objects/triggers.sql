@@ -56,32 +56,31 @@ BEGIN
 END //
 DELIMITER ;
 
---  Verificar si la maquina existe en los centros para transferir o dar de baja
--- DROP TRIGGER IF EXISTS Trigger_VerificarSalidaTransferenciaMaquinas;
--- DELIMITER //
+-- 4. Verificar si la maquina existe en los centros para transferir o dar de baja
+ DROP TRIGGER IF EXISTS Trigger_VerificarSalidaTransferenciaMaquinas;
+ DELIMITER //
 
--- CREATE TRIGGER Trigger_VerificarSalidaTransferenciaMaquinas
--- BEFORE INSERT ON Detalle_Movimientos
--- FOR EACH ROW
--- BEGIN
---     DECLARE v_StockActual INT;
+CREATE TRIGGER Trigger_VerificarSalidaTransferenciaMaquinas
+BEFORE INSERT ON Almacenes_Maquinas
+FOR EACH ROW
+BEGIN
+    DECLARE v_StockActual INT;
 
     -- Obtener el stock actual de la máquina en el centro de origen
---     SELECT IFNULL(SUM(Cantidad), 0) INTO v_StockActual
---     FROM Almacenes_Maquinas
---     WHERE ID_Centro = NEW.ID_Almacen_Origen AND ID_Maquina = NEW.ID_Maquina;
--- 
---     -- Verificar si se está intentando realizar una salida o transferencia con cantidad negativa
---     IF NEW.Cantidad < 0 THEN
---         IF v_StockActual + NEW.Cantidad < 0 THEN
---             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERROR_2_MAQ: No se puede realizar la salida o transferencia: no se encuentra la maquina en el centro.';
- --        END IF;
---     END IF;
--- END //
+    SELECT IFNULL(SUM(Cantidad), 0) INTO v_StockActual
+    FROM Almacenes_Maquinas
+    WHERE ID_Centro = NEW.ID_Centro AND ID_Maquina = NEW.ID_Maquina;
+ 
+     -- Verificar si se está intentando realizar una salida o transferencia con cantidad negativa
+    IF NEW.Cantidad < 0 THEN
+        IF v_StockActual + NEW.Cantidad < 0 THEN
+             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERROR_2_MAQ: No se puede realizar la salida o transferencia: no se encuentra la maquina en el centro.';
+        END IF;
+    END IF;
+END //
+DELIMITER ;
 
--- DELIMITER ;
-
--- Verifica el almacen de materiales para limitar los movimientos
+-- 5. Verifica el almacen de materiales para limitar los movimientos
 DROP TRIGGER IF EXISTS Trigger_VerificarMovimientoMateriales;
 DELIMITER //
 
@@ -105,27 +104,3 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
--- Verifica el stock de materiales para limitar los movimientos
--- DROP TRIGGER IF EXISTS Trigger_VerificarDetalleMovimientoMateriales;
--- DELIMITER //
-
--- CREATE TRIGGER Trigger_VerificarDetalleMovimientoMateriales
--- BEFORE INSERT ON Detalle_Movimientos
--- FOR EACH ROW
--- BEGIN
---     DECLARE v_StockActual INT;
--- 
-    -- Verificar el stock actual del material en el centro de origen
---     SELECT IFNULL(SUM(Cantidad), 0) INTO v_StockActual
---     FROM Almacenes_Materiales
---    WHERE ID_Centro = NEW.ID_Almacen_Origen AND ID_Material = NEW.ID_Material;
-
-    -- Verificar si se está intentando realizar una salida o transferencia con cantidad negativa
---    IF NEW.Cantidad < 0 THEN
---        IF v_StockActual + NEW.Cantidad < 0 THEN
---            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERROR_2_MAT: No se puede realizar la salida o transferencia: stock insuficiente o inexistente.';
---        END IF;
---    END IF;
--- END //
--- DELIMITER ;

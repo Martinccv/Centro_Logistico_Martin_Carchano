@@ -26,6 +26,10 @@ CREATE FUNCTION Funcion_ObtenerCantidadMaterialPorCentro(
 READS SQL DATA
 BEGIN
     DECLARE resultado TEXT;
+    DECLARE max_len INT DEFAULT 100; -- Ajusta este valor según sea necesario
+
+    -- Establecer un límite mayor para group_concat_max_len
+    SET SESSION group_concat_max_len = max_len;
 
     -- Usar GROUP_CONCAT para construir la cadena de resultados
     SELECT GROUP_CONCAT(CONCAT('Centro ID: ', c.ID_Centro, ' - ', c.Nombre, ' - Cantidad: ', IFNULL(am.Cantidad, 0)) SEPARATOR '\n')

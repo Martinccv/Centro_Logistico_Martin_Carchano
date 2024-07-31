@@ -82,6 +82,7 @@ BEGIN
 
 END //
 DELIMITER ;
+
 -- 3. Registrar entrada de materiales o maquinas a un centro
 DROP PROCEDURE IF EXISTS SP_RegistrarEntrada;
 DELIMITER //
@@ -164,38 +165,41 @@ BEGIN
 END //
 DELIMITER ;
 
--- 5. Realizar movimiento una vez tengo solicitud aprobada
-DROP PROCEDURE IF EXISTS SP_RealizarMovimiento;
+-- 5. Realizar movimiento de materiales con una solicitud aprobada
+DROP PROCEDURE IF EXISTS SP_RealizarMovimientoMateriales;
 DELIMITER //
 
-CREATE PROCEDURE SP_RealizarMovimiento(
+CREATE PROCEDURE SP_RealizarMovimientoMateriales(
     IN p_ID_Solicitud INT,
     IN p_ID_Empleado INT,
     IN p_ID_Centro_Origen INT,
-    IN p_Materiales JSON, -- JSON con pares {ID_Material:, Cantidad:}
-    IN p_Maquinas JSON    -- JSON con par {ID_Material:}
+    IN p_Materiales JSON -- JSON con pares {ID_Material:, Cantidad:}
 )
 BEGIN
     DECLARE v_ID_Centro_Destino INT;
     DECLARE v_ID_Movimiento INT;
     DECLARE v_Cantidad INT;
     DECLARE v_ID_Material INT;
-    DECLARE v_ID_Maquina INT;
     DECLARE v_Indice INT DEFAULT 0;
+    -- DECLARE v_Id_Autorizacion INT;
 
     -- Obtener el centro de destino de la solicitud
     SELECT ID_Centro INTO v_ID_Centro_Destino
     FROM Solicitudes
     WHERE ID_Solicitud = p_ID_Solicitud;
+    -- SELECT ID_Autorizacion INTO v_ID_Autorizacion
+    -- FROM Autorizaciones
+    -- WHERE ID_Solicitud = p_ID_Solicitud;
 
-    -- Verificar si la solicitud está aprobada
-    IF (SELECT Estado FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud) != 'Aprobada' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada';
+    -- Verificar si la solicitud está aprobada y es de tipo 'Material'
+    IF (SELECT Estado FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud) != 'Aprobada'
+        OR (SELECT Tipo FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud) != 'Material' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada o no es de tipo Material';
     END IF;
 
     -- Registrar el movimiento en la tabla 'Movimientos'
-    INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
-    VALUES (CURDATE(), 'Transferencia', p_ID_Empleado);
+     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado) -- Agregar ID_Autorizacion
+    VALUES (CURDATE(), 'Transferencia', p_ID_Empleado); -- Agregar v_ID_Autorizacion
 
     -- Obtener el ID del movimiento recién creado
     SET v_ID_Movimiento = LAST_INSERT_ID();
@@ -204,41 +208,72 @@ BEGIN
     WHILE v_Indice < JSON_LENGTH(p_Materiales) DO
         SET v_ID_Material = JSON_UNQUOTE(JSON_EXTRACT(p_Materiales, CONCAT('$[', v_Indice, '].ID_Material')));
         SET v_Cantidad = JSON_UNQUOTE(JSON_EXTRACT(p_Materiales, CONCAT('$[', v_Indice, '].Cantidad')));
-        
+
+        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+        VALUES (p_ID_Centro_Origen, v_ID_Material, -v_Cantidad);
+        INSERT INTO Almacenes_Materiales (ID_Centro, ID_Material, Cantidad)
+        VALUES (v_ID_Centro_Destino, v_ID_Material, v_Cantidad);
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Material, Cantidad)
-        SELECT 
-            v_ID_Movimiento,
-            am.ID_Almacen_Material AS ID_Almacen_Origen,
-            NULL AS ID_Almacen_Destino,
-            v_ID_Material,
-            v_Cantidad
-        FROM Almacenes_Materiales am
-        WHERE am.ID_Centro = p_ID_Centro_Origen AND am.ID_Material = v_ID_Material;
-
+        VALUES (v_ID_Movimiento, p_ID_Centro_Origen, v_ID_Centro_Destino, v_ID_Material, v_Cantidad);
         SET v_Indice = v_Indice + 1;
     END WHILE;
-
-    -- Procesar las máquinas
-    SET v_Indice = 0;
-    WHILE v_Indice < JSON_LENGTH(p_Maquinas) DO
-        SET v_ID_Maquina = JSON_UNQUOTE(JSON_EXTRACT(p_Maquinas, CONCAT('$[', v_Indice, '].ID_Maquina')));
-        
-        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
-        SELECT 
-            v_ID_Movimiento,
-            am.ID_Almacen_Maquina AS ID_Almacen_Origen,
-            NULL AS ID_Almacen_Destino,
-            v_ID_Maquina
-        FROM Almacenes_Maquinas am
-        WHERE am.ID_Centro = p_ID_Centro_Origen AND am.ID_Maquina = v_ID_Maquina;
-
-        SET v_Indice = v_Indice + 1;
-    END WHILE;
-
 END //
 DELIMITER ;
 
---  6. generar pedido de compras desde una solicitud aprobada
+-- 6. Realizar movimientos de maquinas tomando una solicitud aprobada
+DROP PROCEDURE IF EXISTS SP_RealizarMovimientoMaquinas;
+DELIMITER //
+
+CREATE PROCEDURE SP_RealizarMovimientoMaquinas(
+    IN p_ID_Solicitud INT,
+    IN p_ID_Empleado INT,
+    IN p_ID_Centro_Origen INT,
+    IN p_Maquinas JSON -- JSON con pares {ID_Maquina:}
+)
+BEGIN
+    DECLARE v_ID_Centro_Destino INT;
+    DECLARE v_ID_Movimiento INT;
+    DECLARE v_ID_Maquina INT;
+    DECLARE v_Indice INT DEFAULT 0;
+    -- DECLARE v_ID_Autorizacion INT;
+
+    -- Obtener el centro de destino de la solicitud
+    SELECT ID_Centro INTO v_ID_Centro_Destino
+    FROM Solicitudes
+    WHERE ID_Solicitud = p_ID_Solicitud;
+    -- SELECT ID_Autorizacion INTO v_ID_Autorizacion
+    -- FROM Autorizaciones
+    -- WHERE ID_Solicitud = p_ID_Solicitud;
+
+    -- Verificar si la solicitud está aprobada
+    IF (SELECT Estado FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud) != 'Aprobada' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada';
+    END IF;
+
+    -- Registrar el movimiento en la tabla 'Movimientos'
+    INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado) -- Agregar ID_Autorizacion
+    VALUES (CURDATE(), 'Transferencia', p_ID_Empleado); -- Agregar v_ID_Autorizacion
+
+    -- Obtener el ID del movimiento recién creado
+    SET v_ID_Movimiento = LAST_INSERT_ID();
+
+    -- Procesar las máquinas
+    WHILE v_Indice < JSON_LENGTH(p_Maquinas) DO
+        SET v_ID_Maquina = JSON_UNQUOTE(JSON_EXTRACT(p_Maquinas, CONCAT('$[', v_Indice, '].ID_Maquina')));
+
+        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina, Cantidad)
+        VALUES (p_ID_Centro_Origen, v_ID_Maquina, -1);
+        INSERT INTO Almacenes_Maquinas (ID_Centro, ID_Maquina)
+        VALUES (v_ID_Centro_Destino, v_ID_Maquina);
+        INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Origen, ID_Almacen_Destino, ID_Maquina)
+        VALUES (v_ID_Movimiento, p_ID_Centro_Origen, v_ID_Centro_Destino, v_ID_Maquina);
+
+        SET v_Indice = v_Indice + 1;
+    END WHILE;
+END //
+DELIMITER ;
+
+--  7. generar pedido de compras desde una solicitud aprobada
 DROP PROCEDURE IF EXISTS SP_GenerarPedidoCompras;
 DELIMITER //
 
@@ -247,24 +282,25 @@ CREATE PROCEDURE SP_GenerarPedidoCompras(
     IN ID_Empleado_Compras INT
 )
 BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE ID_Material INT;
+    DECLARE Cantidad_Faltante INT;
     DECLARE ID_Pedido INT;
 
     -- Verificar si la solicitud está aprobada
-    IF (SELECT Estado FROM Solicitudes WHERE ID_Solicitud = ID_Solicitud) != 'Aprobada' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada';
+    IF (SELECT COUNT(*) FROM Solicitudes WHERE ID_Solicitud = ID_Solicitud AND Estado = 'Aprobada') = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada o no existe.';
     END IF;
 
-    -- Crear el registro del pedido de compras
-    INSERT INTO Pedidos_Compras (ID_Solicitud, Fecha, ID_Empleado_Compras)
-    VALUES (ID_Solicitud, CURDATE(), ID_Empleado_Compras);
+    -- Crear una tabla temporal para almacenar los materiales faltantes
+    CREATE TEMPORARY TABLE Temp_MaterialesFaltantes (
+        ID_Material INT,
+        Cantidad_Faltante INT
+    );
 
-    -- Obtener el ID del pedido de compras recién creado
-    SET ID_Pedido = LAST_INSERT_ID();
-
-    -- Insertar los detalles del pedido de compras para materiales faltantes
-    INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
+    -- Insertar los materiales faltantes en la tabla temporal
+    INSERT INTO Temp_MaterialesFaltantes (ID_Material, Cantidad_Faltante)
     SELECT 
-        ID_Pedido,
         ds.ID_Material,
         ds.Cantidad - IFNULL(am.TotalDisponible, 0) AS Cantidad_Faltante
     FROM Detalle_Solicitudes ds
@@ -279,6 +315,33 @@ BEGIN
       AND ds.ID_Material IS NOT NULL
       AND ds.Cantidad > IFNULL(am.TotalDisponible, 0);
 
-END; //
+    -- Insertar los pedidos de compras y sus detalles
+    WHILE EXISTS (SELECT 1 FROM Temp_MaterialesFaltantes) DO
+        -- Seleccionar un registro de la tabla temporal
+        SELECT ID_Material, Cantidad_Faltante INTO ID_Material, Cantidad_Faltante
+        FROM Temp_MaterialesFaltantes
+        LIMIT 1;
+
+        -- Crear el registro del pedido de compras
+        INSERT INTO Pedidos_Compras (ID_Solicitud, Fecha, ID_Empleado_Compras)
+        VALUES (ID_Solicitud, CURDATE(), ID_Empleado_Compras);
+
+        -- Obtener el ID del pedido de compras recién creado
+        SET ID_Pedido = LAST_INSERT_ID();
+
+        -- Insertar el detalle del pedido de compras
+        INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
+        VALUES (ID_Pedido, ID_Material, Cantidad_Faltante);
+
+        -- Eliminar el registro procesado de la tabla temporal
+        DELETE FROM Temp_MaterialesFaltantes WHERE ID_Material = ID_Material;
+    END WHILE;
+
+    -- Eliminar la tabla temporal
+    DROP TEMPORARY TABLE Temp_MaterialesFaltantes;
+
+END //
 DELIMITER ;
+
+
 
