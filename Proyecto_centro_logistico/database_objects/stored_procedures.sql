@@ -341,6 +341,11 @@ BEGIN
 
     -- Cerrar el cursor
     CLOSE detalle_cursor;
+    
+     -- Eliminar el pedido de compras si no se han creado detalles
+    IF NOT EXISTS (SELECT 1 FROM Detalle_Pedidos_Compras WHERE ID_Pedido = v_ID_Pedido) THEN
+        DELETE FROM Pedidos_Compras WHERE ID_Pedido = v_ID_Pedido;
+    END IF;
 
     -- Señalar una advertencia al final del procedimiento si hay materiales completamente disponibles
     IF msj = 1 THEN
