@@ -476,7 +476,7 @@ Ninguno.
 ```sql
 CALL SP_RegistrarSalida('Material', 3, 5, 1, 2);
 ```
-Este ejemplo registra la salida de 10 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 303, realizada por el empleado con ID_Empleado igual a 202.
+Este ejemplo registra la salida de 1 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 3, realizada por el empleado con ID_Empleado igual a 2.
 
 ## 5. SP_RealizarMovimientoMateriales
 ### Descripción:
@@ -511,7 +511,7 @@ El procedimiento SP_RealizarMovimientoMaquinas se encarga de registrar el movimi
 ### Uso:
 
 ```sql
-CALL SP_RealizarMovimientoMaquinas( 15, 1, 1,'[{"ID_Maquina": 2}]');
+CALL SP_RealizarMovimientoMaquinas( 15, 3, 1,'[{"ID_Maquina": 2}]');
 ```
 ### Consideraciones:
 
@@ -556,7 +556,7 @@ El procedimiento SP_GenerarPedidoCompras se utiliza para generar un pedido de co
 ### Ejemplo de Uso
 
 ```sql
-CALL SP_GenerarPedidoCompras( 3, 3);
+CALL SP_GenerarPedidoCompras( 20, 3);
 ```
 Este procedimiento es crucial para gestionar eficientemente los pedidos de materiales, asegurando que solo se compren materiales que realmente se necesitan y no están disponibles en los depósitos.
 

@@ -34,7 +34,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- 3. Verifica el stock de maquinas para limitar los movimientos
+-- 3. Verifica el stock de maquinas para limitar los movimientos -- (Necesito que para movimientos de transferencias me lo omita)
 DROP TRIGGER IF EXISTS Trigger_VerificarIngresoMaquinas;
 DELIMITER //
 
@@ -48,6 +48,7 @@ BEGIN
     SELECT IFNULL(SUM(Cantidad), 0) INTO v_StockTotal
     FROM Almacenes_Maquinas
     WHERE ID_Maquina = NEW.ID_Maquina;
+
 
     -- No permitir el ingreso si la máquina ya existe en algún centro
     IF v_StockTotal >= 1 THEN

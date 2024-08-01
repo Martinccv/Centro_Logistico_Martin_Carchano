@@ -26,7 +26,7 @@ CREATE FUNCTION Funcion_ObtenerCantidadMaterialPorCentro(
 READS SQL DATA
 BEGIN
     DECLARE resultado TEXT;
-    DECLARE max_len INT DEFAULT 100; -- Ajusta este valor según sea necesario
+    DECLARE max_len INT DEFAULT 5000; -- Ajusta este valor según sea necesario
 
     -- Establecer un límite mayor para group_concat_max_len
     SET SESSION group_concat_max_len = max_len;

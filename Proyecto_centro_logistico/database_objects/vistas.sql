@@ -120,8 +120,9 @@ FROM
 JOIN
     Materiales m ON a.ID_Material = m.ID_Material
 GROUP BY 
-    a.ID_Centro, a.ID_Material, m.Nombre;
-
+    a.ID_Centro, a.ID_Material, m.Nombre
+HAVING 
+    Stock_Actual != 0;
 
 -- Vista para calcular el stock actual de Máquinas
 CREATE OR REPLACE VIEW Vista_Stock_Maquinas AS
@@ -129,11 +130,13 @@ SELECT
     a.ID_Centro,
     a.ID_Maquina,
     ma.Nombre AS Nombre_Maquina,
-    COUNT(*) AS Stock_Actual
+    SUM(a.Cantidad) AS Stock_Actual
 FROM 
     Almacenes_Maquinas a
 JOIN
     Maquinas ma ON a.ID_Maquina = ma.ID_Maquina
 GROUP BY 
-    a.ID_Centro, a.ID_Maquina, ma.Nombre;
+    a.ID_Centro, a.ID_Maquina, ma.Nombre
+HAVING 
+    Stock_Actual != 0;
 
