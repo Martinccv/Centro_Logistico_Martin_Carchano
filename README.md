@@ -369,7 +369,7 @@ TEXT — Una cadena de texto que enumera cada centro y la cantidad del material 
 ### Ejemplo de Uso:
 
 ```sql
-SELECT Funcion_ObtenerCantidadMaterialPorCentro(5);
+SELECT Funcion_ObtenerCantidadMaterialPorCentro(1);
 ```
 Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
 
