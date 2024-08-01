@@ -51,7 +51,7 @@ BEGIN
 
 
     -- No permitir el ingreso si la máquina ya existe en algún centro
-    IF v_StockTotal >= 1 THEN
+    IF v_StockTotal > 1 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ERROR_1_MAQ:No se puede ingresar la máquina: ya existe en otro centro.';
     END IF;
 END //
@@ -105,3 +105,4 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+

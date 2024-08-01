@@ -409,7 +409,7 @@ Ninguno.
 
 ### Ejemplo de Uso:
 ```sql
-CALL SP_AprobarORechazarSolicitud(1,1, 'Aprobada');
+CALL SP_AprobarORechazarSolicitud(16,1, 'Aprobada');
 ```
 Este ejemplo aprueba la solicitud con ID_Solicitud igual a 1 por parte del socio gerente con ID_Socio_Gerente igual a 1.
 
@@ -556,7 +556,10 @@ El procedimiento SP_GenerarPedidoCompras se utiliza para generar un pedido de co
 ### Ejemplo de Uso
 
 ```sql
+-- ejemplo pedido tomado completamente
 CALL SP_GenerarPedidoCompras( 20, 3);
+-- ejemplo pedido que no se toma
+CALL SP_GenerarPedidoCompras( 16, 3);
 ```
 Este procedimiento es crucial para gestionar eficientemente los pedidos de materiales, asegurando que solo se compren materiales que realmente se necesitan y no están disponibles en los depósitos.
 

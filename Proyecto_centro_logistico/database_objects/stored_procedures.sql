@@ -278,70 +278,74 @@ DROP PROCEDURE IF EXISTS SP_GenerarPedidoCompras;
 DELIMITER //
 
 CREATE PROCEDURE SP_GenerarPedidoCompras(
-    IN ID_Solicitud INT,
-    IN ID_Empleado_Compras INT
+    IN p_ID_Solicitud INT,
+    IN p_ID_Empleado_Compras INT
 )
 BEGIN
+    DECLARE v_ID_Material INT;
+    DECLARE v_Cantidad INT;
+    DECLARE v_CantidadDisponible INT;
+    DECLARE v_CantidadPedir INT;
+    DECLARE v_ID_Pedido INT;
     DECLARE done INT DEFAULT 0;
-    DECLARE ID_Material INT;
-    DECLARE Cantidad_Faltante INT;
-    DECLARE ID_Pedido INT;
+    DECLARE msj INT DEFAULT 0;
+    DECLARE detalle_cursor CURSOR FOR
+        SELECT ID_Material, Cantidad
+        FROM Detalle_Solicitudes
+        WHERE ID_Solicitud = p_ID_Solicitud;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
     -- Verificar si la solicitud está aprobada
-    IF (SELECT COUNT(*) FROM Solicitudes WHERE ID_Solicitud = ID_Solicitud AND Estado = 'Aprobada') = 0 THEN
+    IF (SELECT COUNT(*) FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud AND Estado = 'Aprobada') = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada o no existe.';
     END IF;
 
-    -- Crear una tabla temporal para almacenar los materiales faltantes
-    CREATE TEMPORARY TABLE Temp_MaterialesFaltantes (
-        ID_Material INT,
-        Cantidad_Faltante INT
-    );
+    -- Crear el registro del pedido de compras para cada material
+    INSERT INTO Pedidos_Compras (ID_Solicitud, Fecha, ID_Empleado_Compras)
+    VALUES (p_ID_Solicitud, CURDATE(), p_ID_Empleado_Compras);
 
-    -- Insertar los materiales faltantes en la tabla temporal
-    INSERT INTO Temp_MaterialesFaltantes (ID_Material, Cantidad_Faltante)
-    SELECT 
-        ds.ID_Material,
-        ds.Cantidad - IFNULL(am.TotalDisponible, 0) AS Cantidad_Faltante
-    FROM Detalle_Solicitudes ds
-    LEFT JOIN (
-        SELECT ID_Material, SUM(Cantidad) AS TotalDisponible
-        FROM Almacenes_Materiales am
-        JOIN Centros c ON am.ID_Centro = c.ID_Centro
-        WHERE c.Tipo = 'Deposito'
-        GROUP BY ID_Material
-    ) am ON ds.ID_Material = am.ID_Material
-    WHERE ds.ID_Solicitud = ID_Solicitud
-      AND ds.ID_Material IS NOT NULL
-      AND ds.Cantidad > IFNULL(am.TotalDisponible, 0);
+    -- Obtener el ID del pedido de compras recién creado
+    SET v_ID_Pedido = LAST_INSERT_ID();
 
-    -- Insertar los pedidos de compras y sus detalles
-    WHILE EXISTS (SELECT 1 FROM Temp_MaterialesFaltantes) DO
-        -- Seleccionar un registro de la tabla temporal
-        SELECT ID_Material, Cantidad_Faltante INTO ID_Material, Cantidad_Faltante
-        FROM Temp_MaterialesFaltantes
-        LIMIT 1;
+    -- Abrir el cursor
+    OPEN detalle_cursor;
 
-        -- Crear el registro del pedido de compras
-        INSERT INTO Pedidos_Compras (ID_Solicitud, Fecha, ID_Empleado_Compras)
-        VALUES (ID_Solicitud, CURDATE(), ID_Empleado_Compras);
+    -- Bucle para cada material en el detalle de la solicitud
+    read_loop: LOOP
+        FETCH detalle_cursor INTO v_ID_Material, v_Cantidad;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
 
-        -- Obtener el ID del pedido de compras recién creado
-        SET ID_Pedido = LAST_INSERT_ID();
+        -- Obtener la cantidad disponible en centros de tipo "Deposito"
+        SELECT IFNULL(SUM(Cantidad), 0) INTO v_CantidadDisponible
+        FROM Almacenes_Materiales
+        WHERE ID_Material = v_ID_Material AND ID_Centro IN (7, 8, 9);
 
-        -- Insertar el detalle del pedido de compras
-        INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
-        VALUES (ID_Pedido, ID_Material, Cantidad_Faltante);
+        -- Si la cantidad disponible es suficiente, emitir advertencia y continuar
+        IF v_CantidadDisponible >= v_Cantidad THEN
+            -- Todo el material está disponible en depósitos, advertir y no crear pedido
+            SET msj = 1; -- Salir del bucle en este caso
 
-        -- Eliminar el registro procesado de la tabla temporal
-        DELETE FROM Temp_MaterialesFaltantes WHERE ID_Material = ID_Material;
-    END WHILE;
+        ELSE
+            -- Cantidad a pedir es la requerida menos la disponible en depósitos
+            SET v_CantidadPedir = v_Cantidad - v_CantidadDisponible;
 
-    -- Eliminar la tabla temporal
-    DROP TEMPORARY TABLE Temp_MaterialesFaltantes;
+            -- Insertar el detalle del pedido de compras
+            INSERT INTO Detalle_Pedidos_Compras (ID_Pedido, ID_Material, Cantidad_Pendiente)
+            VALUES (v_ID_Pedido, v_ID_Material, v_CantidadPedir);
+        END IF;
+
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE detalle_cursor;
+
+    -- Señalar una advertencia al final del procedimiento si hay materiales completamente disponibles
+    IF msj = 1 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ADVERTENCIA: Uno o más materiales están completamente disponibles en depósitos.';
+    END IF;
 
 END //
 DELIMITER ;
-
-
-
