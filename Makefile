@@ -59,7 +59,13 @@ backup-db:
 	@echo "Back up database by structure and data"
 	# Dump MySQL database to a file
 	# para que te permita descargar con procedimientos
-	docker exec -it $(SERVICE_NAME) mysqldump --routines=true -u$(MYSQL_USER) -p$(PASSWORD) --host 127.0.0.1 --port 3306 $(DATABASE) > ./$(DATABASE)-backup.sql
+	docker exec -it $(SERVICE_NAME) mysqldump --routines=true -u$(MYSQL_USER) -p$(PASSWORD) --host 127.0.0.1 --port 3306 $(DATABASE) > ./backup/$(DATABASE)-backup.sql
+
+restore-db:
+	@echo "Restore database by structure and data"
+	# Restore MySQL database from a dump file
+	# Debe ingresar al archivo dumpeado las lineas drop y create database CentroLogistico, USE CentroLogistico y comentar la primera linea de codigo donde advierte sobre contraseña
+	docker exec -i $(SERVICE_NAME) mysql -u$(MYSQL_USER) -p$(PASSWORD) < ./backup/$(DATABASE)-backup.sql
 
 down:
 	@echo "Remove the Database"
