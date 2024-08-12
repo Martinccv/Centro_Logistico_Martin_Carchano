@@ -8,34 +8,63 @@ El siguiente diagrama muestra el modelo de entidad-relación del sistema:
 <a href="https://miro.com/app/board/uXjVK4abNrw=/" target="_blank">Diagrama ER en Miro</a>
 
 ## Contenido
-### Esquema de Base de Datos
+### 1. Esquema de Base de Datos
 
-- Proveedores
-- Materiales
-- Máquinas
-- Clientes
-- Centros (Obras y Depósitos)
-- Empleados
-- Socios Gerentes
-- Almacenes de Materiales
-- Almacenes de Máquinas
-- Solicitudes
-- Detalle de Solicitudes
-- Autorizaciones
-- Movimientos
-- Detalle de Movimientos
-- Pedidos de Compras
-- Detalle de Pedidos de Compras
-- Relaciones entre Tablas
+- 1.1. Proveedores
+- 1.2. Materiales
+- 1.3. Máquinas
+- 1.4. Clientes
+- 1.5. Centros (Obras y Depósitos)
+- 1.6. Empleados
+- 1.7. Socios Gerentes
+- 1.8. Almacenes de Materiales
+- 1.9. Almacenes de Máquinas
+- 1.10. Solicitudes
+- 1.11. Detalle de Solicitudes
+- 1.12. Autorizaciones
+- 1.13. Movimientos
+- 1.14. Detalle de Movimientos
+- 1.15. Pedidos de Compras
+- 1.16. Detalle de Pedidos de Compras
+### 2. Relaciones entre Tablas
+- 2.1. Materiales - Proveedores
+- 2.2. Máquinas - Proveedores
+- 2.3. Empleados - Centros
+- 2.4. Almacenes_Materiales - Centros, Materiales
+- 2.5. Almacenes_Maquinas - Centros, Máquinas
+- 2.6. Solicitudes - Clientes, Empleados, Proveedores, Centros
+- 2.7. Detalle_Solicitudes - Solicitudes, Materiales, Máquinas
+- 2.8. Autorizaciones - Solicitudes, Socios Gerentes
+- 2.9. Movimientos - Empleados, Autorizaciones
+- 2.10. Detalle_Movimientos - Movimientos, Centros, Materiales, Máquinas
+- 2.11. Pedidos_Compras - Solicitudes, Empleados
+- 2.12. Detalle_Pedidos_Compras - Pedidos_Compras, Materiales
 
-### Stored Procedures, Triggers, Vistas y Funciones
+### 3. Stored Procedures, Triggers, Vistas y Funciones
+- 3.1. Vistas
+- 3.2. Funciones
+- 3.3. Stored Procedures
+- 3.4. Triggers
 
-- Funciones
-- Triggers
-- Stored Procedures
-- Vistas
-## Esquema de Base de Datos
-### 1. Proveedores
+### 4. Creacion de roles dentro de la base de datos
+
+- 4.1. Deposito_Responsable
+- 4.2. Deposito_Administrativo
+- 4.3. Obra_Jefe
+- 4.4. Obra_Capataz
+- 4.5. Compras_Responsable
+- 4.6. Compras_Administrativo
+- 4.7. Desarrollo_dev
+- 4.8. Socio_Gerente
+
+### 5. Comandos nuevos del Makefile
+
+- 5.1. access-deposito-resp-db
+- 5.2. backup-db
+- 5.3. restore-db
+  
+## 1. Esquema de Base de Datos
+### 1.1. Proveedores
 Tabla que almacena la información de los proveedores de materiales y máquinas.
 
 - ID_Proveedor: Identificador único.
@@ -43,7 +72,7 @@ Tabla que almacena la información de los proveedores de materiales y máquinas.
 - Dirección: Dirección del proveedor.
 - Teléfono: Teléfono de contacto.
 - Rubro: Tipo de productos que provee.
-### 2. Materiales
+### 1.2. Materiales
 Tabla que almacena la información de los materiales disponibles.
 
 - ID_Material: Identificador único.
@@ -51,7 +80,7 @@ Tabla que almacena la información de los materiales disponibles.
 - Descripción: Descripción detallada del material.
 - Unidad: Unidad de medida del material.
 - ID_Proveedor: Identificador del proveedor.
-### 3. Máquinas
+### 1.3. Máquinas
 Tabla que almacena la información de las máquinas disponibles.
 
 - ID_Maquina: Identificador único.
@@ -59,21 +88,21 @@ Tabla que almacena la información de las máquinas disponibles.
 - Descripción: Descripción detallada de la máquina.
 - Estado: Estado actual de la máquina (e.g., operativa, en reparación).
 - ID_Proveedor: Identificador del proveedor.
-### 4. Clientes
+### 1.4. Clientes
 Tabla que almacena la información de los clientes.
 
 - ID_Cliente: Identificador único.
 - Nombre: Nombre del cliente.
 - Dirección: Dirección del cliente.
 - Teléfono: Teléfono de contacto.
-### 5. Centros (Obras y Depósitos)
+### 1.5. Centros (Obras y Depósitos)
 Tabla que almacena la información de los centros de almacenamiento (obras y depósitos).
 
 - ID_Centro: Identificador único.
 - Nombre: Nombre del centro.
 - Dirección: Dirección del centro.
 - Tipo: Tipo de centro ('Obra' o 'Depósito').
-### 6. Empleados
+### 1.6. Empleados
 Tabla que almacena la información de los empleados.
 
 - ID_Empleado: Identificador único.
@@ -82,26 +111,26 @@ Tabla que almacena la información de los empleados.
 - Teléfono: Teléfono de contacto.
 - ID_Centro: Identificador del centro donde trabaja el empleado.
 - Tipo: Tipo de empleado ('Obra', 'Depósito', 'Compras').
-### 7. Socios Gerentes
+### 1.7. Socios Gerentes
 Tabla que almacena la información de los socios gerentes.
 
 - ID_Socio_Gerente: Identificador único.
 - Nombre: Nombre del socio gerente.
 - Teléfono: Teléfono de contacto.
-### 8. Almacenes de Materiales
+### 1.8. Almacenes de Materiales
 Tabla que almacena el inventario de materiales en cada centro.
 
 - ID_Almacen_Material: Identificador único.
 - ID_Centro: Identificador del centro.
 - ID_Material: Identificador del material.
 - Cantidad: Cantidad disponible del material.
-### 9. Almacenes de Máquinas
+### 1.9. Almacenes de Máquinas
 Tabla que almacena el inventario de máquinas en cada centro.
 
 - ID_Almacen_Maquina: Identificador único.
 - ID_Centro: Identificador del centro.
 - ID_Maquina: Identificador de la máquina.
-### 10. Solicitudes
+### 1.10. Solicitudes
 Tabla que registra las solicitudes de materiales y máquinas.
 
 - ID_Solicitud: Identificador único.
@@ -112,7 +141,7 @@ Tabla que registra las solicitudes de materiales y máquinas.
 - Estado: Estado de la solicitud ('Pendiente', 'Parcial', 'Aprobada', 'Rechazada').
 - ID_Proveedor: Identificador del proveedor.
 - ID_Centro: Identificador del centro.
-### 11. Detalle de Solicitudes
+### 1.11. Detalle de Solicitudes
 Tabla que almacena el detalle de las solicitudes.
 
 - ID_Detalle_Solicitud: Identificador único.
@@ -120,7 +149,7 @@ Tabla que almacena el detalle de las solicitudes.
 - ID_Material: Identificador del material.
 - ID_Maquina: Identificador de la máquina.
 - Cantidad: Cantidad solicitada.
-### 12. Autorizaciones
+### 1.12. Autorizaciones
 Tabla que registra las autorizaciones de los movimientos y solicitudes.
 
 - ID_Autorizacion: Identificador único.
@@ -128,7 +157,7 @@ Tabla que registra las autorizaciones de los movimientos y solicitudes.
 - ID_Socio_Gerente: Identificador del socio gerente que autoriza.
 - Estado: Estado de la autorización ('Aprobada', 'Rechazada', 'Pendiente').
 - Fecha: Fecha de la autorización.
-### 13. Movimientos
+### 1.13. Movimientos
 Tabla que registra los movimientos de materiales y máquinas.
 
 - ID_Movimiento: Identificador único.
@@ -136,7 +165,7 @@ Tabla que registra los movimientos de materiales y máquinas.
 - Tipo: Tipo de movimiento ('Entrada', 'Salida', 'Transferencia').
 - ID_Empleado: Identificador del empleado responsable.
 - ID_Autorizacion: Identificador de la autorización correspondiente.
-### 14. Detalle de Movimientos
+### 1.14. Detalle de Movimientos
 Tabla que almacena el detalle de los movimientos de materiales y máquinas.
 
 - ID_Detalle_Movimiento: Identificador único.
@@ -146,68 +175,68 @@ Tabla que almacena el detalle de los movimientos de materiales y máquinas.
 - ID_Material: Identificador del material (si aplica).
 - ID_Maquina: Identificador de la máquina (si aplica).
 - Cantidad: Cantidad movida.
-### 15. Pedidos de Compras
+### 1.15. Pedidos de Compras
 Tabla que registra los pedidos de compras de materiales.
 
 - ID_Pedido: Identificador único.
 - ID_Solicitud: Identificador de la solicitud.
 - Fecha: Fecha del pedido.
 - ID_Empleado_Compras: Identificador del empleado de compras.
-### 16. Detalle de Pedidos de Compras
+### 1.16. Detalle de Pedidos de Compras
 Tabla que almacena el detalle de los pedidos de compras de materiales.
 
 - ID_Detalle_Pedido: Identificador único.
 - ID_Pedido: Identificador del pedido.
 - ID_Material: Identificador del material.
 - Cantidad: Cantidad pendiente de recibir.
-## Relaciones entre Tablas
+## 2. Relaciones entre Tablas
 Se establecen las siguientes relaciones clave entre las tablas:
 
-### 1. Materiales - Proveedores:
+### 2.1. Materiales - Proveedores:
 - Materiales.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Materiales
-### 3. Máquinas - Proveedores:
+### 2.2. Máquinas - Proveedores:
 - Maquinas.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Maquinas
-### 4. Empleados - Centros: 
+### 2.3. Empleados - Centros: 
 - Empleados.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Empleados
-### 5. Almacenes_Materiales - Centros, Materiales:
+### 2.4. Almacenes_Materiales - Centros, Materiales:
 - Almacenes_Materiales.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Almacenes_Materiales
 - Almacenes_Materiales.ID_Material → Materiales.ID_Material, relación: * Materiales - * Almacenes_Materiales
-### 5. Almacenes_Maquinas - Centros, Máquinas:
+### 2.5. Almacenes_Maquinas - Centros, Máquinas:
 - Almacenes_Maquinas.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Almacenes_Maquinas
 - Almacenes_Maquinas.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Almacenes_Maquinas
-### 6. Solicitudes - Clientes, Empleados, Proveedores, Centros:
+### 2.6. Solicitudes - Clientes, Empleados, Proveedores, Centros:
 - Solicitudes.ID_Cliente → Clientes.ID_Cliente, relación: 1 Cliente - * Solicitudes
 - Solicitudes.ID_Empleado → Empleados.ID_Empleado, relación: 1 Empleado - * Solicitudes
 - Solicitudes.ID_Proveedor → Proveedores.ID_Proveedor, relación: 1 Proveedor - * Solicitudes
 - Solicitudes.ID_Centro → Centros.ID_Centro, relación: 1 Centro - * Solicitudes
-### 7. Detalle_Solicitudes - Solicitudes, Materiales, Máquinas:
+### 2.7. Detalle_Solicitudes - Solicitudes, Materiales, Máquinas:
 - Detalle_Solicitudes.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Solicitud - * Detalle_Solicitudes
 - Detalle_Solicitudes.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Solicitudes
 - Detalle_Solicitudes.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Detalle_Solicitudes
-### 8. Autorizaciones - Solicitudes, Socios Gerentes:
+### 2.8. Autorizaciones - Solicitudes, Socios Gerentes:
 - Autorizaciones.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Autorización - 1 Solicitud
 - Autorizaciones.ID_Socio_Gerente → Socios_Gerentes.ID_Socio_Gerente, relación: 1 Socio_Gerente - * Autorizaciones
-### 9. Movimientos - Empleados, Autorizaciones:
+### 2.9. Movimientos - Empleados, Autorizaciones:
 - Movimientos.ID_Empleado → Empleados.ID_Empleado, relación: 1 Empleado - * Movimientos
 - Movimientos.ID_Autorizacion → Autorizaciones.ID_Autorizacion, relación: 1 Autorización - * Movimientos
-### 10. Detalle_Movimientos - Movimientos, Centros, Materiales, Máquinas:
+### 2.10. Detalle_Movimientos - Movimientos, Centros, Materiales, Máquinas:
 - Detalle_Movimientos.ID_Movimiento → Movimientos.ID_Movimiento, relación: 1 Movimiento - * Detalle_Movimientos
 - Detalle_Movimientos.ID_Almacen_Origen → Centros.ID_Centro, relación: 1 Centro origen - * Detalle_Movimientos
 - Detalle_Movimientos.ID_Almacen_Destino → Centros.ID_Centro, relación: 1 Centro destino - * Detalle_Movimientos
 - Detalle_Movimientos.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Movimientos
 - Detalle_Movimientos.ID_Maquina → Maquinas.ID_Maquina, relación: * Maquinas - * Detalle_Movimientos
-### 11. Pedidos_Compras - Solicitudes, Empleados:
+### 2.11. Pedidos_Compras - Solicitudes, Empleados:
 - Pedidos_Compras.ID_Solicitud → Solicitudes.ID_Solicitud, relación: 1 Solicitud - * Pedidos_Compras
 - Pedidos_Compras.ID_Empleado_Compras → Empleados.ID_Empleado, relación: 1 Empleado - * Pedidos_Compras
-### 12. Detalle_Pedidos_Compras - Pedidos_Compras, Materiales:
+### 2.12. Detalle_Pedidos_Compras - Pedidos_Compras, Materiales:
 - Detalle_Pedidos_Compras.ID_Pedido → Pedidos_Compras.ID_Pedido, relación: 1 Pedido_Compras - * Detalles_Pedido_Compras
 Detalle_Pedidos_Compras.ID_Material → Materiales.ID_Material, relación: * Materiales - * Detalle_Pedido_Compras 
 
-# Stored Procedures, Triggers, Vistas y Funciones
+# 3. Stored Procedures, Triggers, Vistas y Funciones
 
-# Vistas
+## 3.1 Vistas
 
-## 1. Vista_SolicitudesPendientes
+### 3.1.1. Vista_SolicitudesPendientes
 
 ### Descripción:
 Muestra una lista de todas las solicitudes que están pendientes de aprobación. Incluye detalles sobre la solicitud, el cliente asociado y el empleado que la creó.
@@ -225,7 +254,7 @@ Esta vista es útil para los gestores y responsables que necesitan revisar y apr
 SELECT * FROM Vista_SolicitudesPendientes;
 ```
 
-## 2. Vista_Materiales_Centro
+### 3.1.2. Vista_Materiales_Centro
 
 ### Descripción:
 Muestra los materiales disponibles en un centro específico que está clasificado como depósito. Incluye el nombre del centro, el nombre del material y la cantidad disponible.
@@ -241,7 +270,7 @@ Esta vista permite a los usuarios consultar rápidamente los materiales disponib
 SELECT * FROM Vista_Materiales_Centro;
 ```
 
-## 3. Vista_Maquinas_Centro
+### 3.1.3. Vista_Maquinas_Centro
 
 ### Descripción:
 Muestra las máquinas disponibles en un centro específico clasificado como depósito. Incluye el nombre del centro, el nombre de la máquina, una breve descripción y el estado de la máquina.
@@ -258,7 +287,7 @@ Esta vista es útil para consultar el inventario de máquinas en los centros de 
 SELECT * FROM Vista_Maquinas_Centro;
 ```
 
-## 4. Vista_Movimientos
+### 3.1.4. Vista_Movimientos
 
 ### Descripción:
 Proporciona información detallada sobre los movimientos de materiales y máquinas, incluyendo la fecha del movimiento, el tipo, el centro involucrado, el empleado responsable, y los detalles específicos del material o máquina movida.
@@ -280,7 +309,7 @@ Esta vista es útil para hacer un seguimiento de todos los movimientos de invent
 SELECT * FROM Vista_Movimientos;
 ```
 
-## 5. Vista_Solicitudes
+### 3.1.5. Vista_Solicitudes
 
 ### Descripción:
 Muestra información detallada sobre las solicitudes, incluyendo la fecha, tipo, cliente, empleado, centro asociado, y los detalles de los materiales y máquinas solicitados.
@@ -304,7 +333,7 @@ Esta vista permite consultar la información detallada de todas las solicitudes 
 SELECT * FROM Vista_Solicitudes;
 ```
 
-## 6. Vista_Stock_Materiales
+### 3.1.6. Vista_Stock_Materiales
 
 La vista Stock_Materiales proporciona un resumen del stock actual de materiales en cada centro de almacenamiento.
 
@@ -320,7 +349,7 @@ Visualiza la cantidad de materiales que tiene cada centro
 ```sql
 SELECT * FROM Vista_Stock_Materiales;
 ```
-## Vista_Stock_Maquinas
+### 3.1.7. Vista_Stock_Maquinas
 La vista Stock_Maquinas proporciona un resumen del stock actual de máquinas en cada centro de almacenamiento.
 
 ### Estructura de la Vista
@@ -335,9 +364,9 @@ Permite visualizar en una tabla todas las maquinas para los diferentes centros
 SELECT * FROM Vista_Stock_Maquinas;
 ```
 
-# Funciones
+## 3.2. Funciones
 
-## 1. Funcion_ObtenerEstadoMaquina
+### 3.2.1. Funcion_ObtenerEstadoMaquina
 
 ### Descripción:
 Devuelve el estado de una máquina específica en función de su identificador.
@@ -355,7 +384,7 @@ SELECT Funcion_ObtenerEstadoMaquina(1);
 ```
 Este ejemplo devolverá el estado de la máquina con ID_Maquina igual a 1.
 
-## 2. Funcion_ObtenerCantidadMaterialPorCentro
+### 3.2.2. Funcion_ObtenerCantidadMaterialPorCentro
 
 ### Descripción:
 Verifica y devuelve la cantidad de un material específico en todos los centros. La función utiliza un cursor para iterar sobre los centros y concatenar los resultados en una cadena de texto.
@@ -373,7 +402,7 @@ SELECT Funcion_ObtenerCantidadMaterialPorCentro(1);
 ```
 Este ejemplo devolverá una cadena de texto con la cantidad del material con ID_Material igual a 5 en cada centro.
 
-## 3. Funcion_ObtenerCantidadMaterialCentro
+### 3.2.3. Funcion_ObtenerCantidadMaterialCentro
 
 ### Descripción:
 Calcula y devuelve la cantidad de un material específico en un centro determinado. Si el material no está disponible en el centro, la función retorna 0.
@@ -392,9 +421,9 @@ SELECT Funcion_ObtenerCantidadMaterialCentro(2, 2);
 ```
 Este ejemplo devolverá la cantidad del material con ID_Material igual a 2 en el centro con ID_Centro igual a 2.
   
-# Stored Procedures
+## 3.3. Stored Procedures
 
-## 1. SP_AprobarORechazarSolicitud
+### 3.3.1. SP_AprobarORechazarSolicitud
 
 ### Descripción:
 Aprueba o rechaza una solicitud de materiales o máquinas. Actualiza el estado en las tablas `Autorizaciones` y `Solicitudes`.
@@ -413,7 +442,7 @@ CALL SP_AprobarORechazarSolicitud(16,1, 'Aprobada');
 ```
 Este ejemplo aprueba la solicitud con ID_Solicitud igual a 1 por parte del socio gerente con ID_Socio_Gerente igual a 1.
 
-## 2. SP_CrearSolicitud
+### 3.3.2. SP_CrearSolicitud
 
 ### Descripción:
 Registra una nueva solicitud de materiales o máquinas. Crea una entrada en la tabla Solicitudes y añade detalles a Detalle_Solicitudes a partir de un JSON que contiene los elementos y cantidades.
@@ -436,7 +465,7 @@ CALL SP_CrearSolicitud('Material',1,3,6,'[{"ID_Item": 1, "Cantidad": 20}, {"ID_I
 ```
 Este ejemplo crea una solicitud de materiales para el cliente con ID_Cliente igual a 1, el empleado con ID_Empleado igual a 202, en el centro con ID_Centro igual a 303, solicitando 10 unidades del material con ID_Item igual a 5.
 
-## 3. SP_RegistrarIngreso
+### 3.3.3. SP_RegistrarIngreso
 
 ### Descripción:
 Registra el ingreso de materiales o máquinas a un centro. Crea un registro en la tabla Movimientos y actualiza o inserta en la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
@@ -456,7 +485,7 @@ Ninguno.
 ```sql
 CALL SP_RegistrarEntrada('Material', 3, 5, 1, 2);
 ```
-## 4. SP_RegistrarSalida
+### 3.3.4. SP_RegistrarSalida
 
 ### Descripción:
 Registra la salida de materiales o máquinas de un centro. Crea un registro en la tabla Movimientos y actualiza la tabla correspondiente (Almacenes_Materiales o Almacenes_Maquinas).
@@ -478,7 +507,7 @@ CALL SP_RegistrarSalida('Material', 3, 5, 1, 2);
 ```
 Este ejemplo registra la salida de 1 unidades del material con ID_Material igual a 5 del centro con ID_Centro igual a 3, realizada por el empleado con ID_Empleado igual a 2.
 
-## 5. SP_RealizarMovimientoMateriales
+### 3.3.5. SP_RealizarMovimientoMateriales
 ### Descripción:
 El procedimiento SP_RealizarMovimientoMateriales se encarga de registrar el movimiento de materiales desde un almacén de origen a un almacén de destino, basándose en una solicitud aprobada. Asegura que solo se muevan materiales si la solicitud está aprobada y es del tipo "Material".
 
@@ -498,7 +527,7 @@ CALL SP_RealizarMovimientoMateriales(2 ,2 , 8 ,'[{"ID_Material": 1, "Cantidad": 
 La solicitud debe estar en estado "Aprobada" y ser de tipo "Material".
 Verifica que haya suficiente cantidad de material en el almacén de origen antes de realizar el movimiento.
 
-## 6. SP_RealizarMovimientoMaquinas
+### 3.3.6. SP_RealizarMovimientoMaquinas
 ### Descripción:
 El procedimiento SP_RealizarMovimientoMaquinas se encarga de registrar el movimiento de máquinas desde un almacén de origen a un almacén de destino, basándose en una solicitud aprobada. Asegura que solo se muevan máquinas si la solicitud está aprobada y es del tipo "Maquina".
 
@@ -519,7 +548,7 @@ La solicitud debe estar en estado "Aprobada" y ser de tipo "Maquina".
 Verifica que la máquina esté disponible en el almacén de origen antes de realizar el movimiento.
 Estos procedimientos almacenados están diseñados para manejar movimientos logísticos de materiales y máquinas dentro de un sistema de gestión de centros logísticos, asegurando que solo se procesen solicitudes válidas y aprobadas, y controlando adecuadamente el stock disponible en cada almacén.
 
-## 7. SP_GenerarPedidoCompras
+### 3.3.7. SP_GenerarPedidoCompras
 
 ### Propósito
 El procedimiento SP_GenerarPedidoCompras se utiliza para generar un pedido de compras basado en una solicitud de materiales aprobada. Este procedimiento asegura que se compre solo la cantidad de materiales que no está disponible en los centros clasificados como depósitos.
@@ -563,9 +592,9 @@ CALL SP_GenerarPedidoCompras( 16, 3);
 ```
 Este procedimiento es crucial para gestionar eficientemente los pedidos de materiales, asegurando que solo se compren materiales que realmente se necesitan y no están disponibles en los depósitos.
 
-# Triggers en la Base de Datos
+## 3.4. Triggers en la Base de Datos
 
-## 1. Trigger_ValidarEstadoSolicitud
+### 3.4.1. Trigger_ValidarEstadoSolicitud
 
 ### Descripción
 Este trigger se activa antes de insertar un nuevo registro en la tabla `Autorizaciones` y valida que el estado de la solicitud correspondiente sea 'Pendiente'.
@@ -573,7 +602,7 @@ Este trigger se activa antes de insertar un nuevo registro en la tabla `Autoriza
 ### Propósito
 Garantizar que solo se puedan autorizar solicitudes que estén en estado 'Pendiente'.
 
-## 2. Trigger_ActualizarEstadoSolicitudAprobada
+### 3.4.2. Trigger_ActualizarEstadoSolicitudAprobada
 
 ### Descripción
 Este trigger se activa después de insertar un registro en Autorizaciones y actualiza el estado de la solicitud a 'Aprobada' si la autorización fue aprobada.
@@ -581,7 +610,7 @@ Este trigger se activa después de insertar un registro en Autorizaciones y actu
 ### Propósito
 Automatizar la actualización del estado de las solicitudes cuando se aprueban las autorizaciones.
 
-## 3. Trigger_VerificarIngresoMaquinas
+### 3.4.3. Trigger_VerificarIngresoMaquinas
 
 ### Descripción
 Este trigger se activa antes de insertar un registro en Almacenes_Maquinas y asegura que una máquina no sea registrada en más de un centro.
@@ -589,7 +618,7 @@ Este trigger se activa antes de insertar un registro en Almacenes_Maquinas y ase
 ### Propósito
 Evitar duplicidad de registros de máquinas en distintos centros.
 
-## 4. Trigger_VerificarSalidaTransferenciaMaquinas
+### 3.4.4. Trigger_VerificarSalidaTransferenciaMaquinas
 
 ### Descripción
 Este trigger se activa antes de insertar un registro en Detalle_Movimientos para verificar que haya suficiente stock de máquinas en el centro de origen antes de una salida o transferencia.
@@ -597,98 +626,101 @@ Este trigger se activa antes de insertar un registro en Detalle_Movimientos para
 ### Propósito
 Asegurar que no se intenten salidas o transferencias con stock insuficiente.
 
-## 5. Trigger_VerificarMovimientoMateriales
+### 3.4.5. Trigger_VerificarMovimientoMateriales
 ### Descripción
 Este trigger se activa antes de insertar un registro en Almacenes_Materiales para verificar la disponibilidad de stock para movimientos de salida o transferencia de materiales.
 
 ### Propósito
 Garantizar que los movimientos de salida o transferencia de materiales se realicen solo si hay suficiente stock disponible.
 
-# Creacion de roles dentro de la base de datos
+# 4. Creacion de roles dentro de la base de datos
 
 Se han creado ocho roles con permisos específicos sobre la base de datos CentroLogistico. A continuación, se describen los roles y sus privilegios:
 
-## Deposito_Responsable:
+## 4.1. Deposito_Responsable:
 
 - Control completo sobre las tablas relacionadas con depósitos (Almacenes_Materiales, Almacenes_Maquinas, Movimientos,Detalle_Movimientos, Solicitudes, Detalle_Solicitudes).
 - Acceso de solo lectura a las tablas Pedidos_Compras y Autorizaciones.
 - Acceso a vistas relacionadas con depósitos y movimientos.
 - Ejecución de funciones para obtener estados de máquinas y cantidades de materiales.
-## Deposito_Administrativo:
+## 4.2. Deposito_Administrativo:
 
 - Permisos para seleccionar, insertar y actualizar registros en las tablas relacionadas con depósitos y movimientos.
-Acceso a vistas relacionadas con depósitos y stock.
+- Acceso a vistas relacionadas con depósitos y stock.
 - Ejecución de procedimientos para registrar entradas y salidas de materiales o máquinas.
-## Obra_Jefe:
+## 4.3. Obra_Jefe:
 
 - Control sobre las tablas relacionadas con las obras (Almacenes_Materiales, Almacenes_Maquinas, Solicitudes, Detalle_Solicitudes, Movimientos, Detalle_Movimientos).
 - Acceso de solo lectura a la tabla Autorizaciones.
 - Acceso a vistas de solicitudes y movimientos.
-- Ejecución de funciones para obtener estados de máquinas y cantidades de materiales.
-## Obra_Capataz:
+- Ejecución de funciones y procedimientos para obtener estados de máquinas, realizar solicitudes y ver cantidades de materiales.
+## 4.4. Obra_Capataz:
 
 - Permisos de lectura y actualización sobre las tablas Solicitudes y Detalle_Solicitudes.
 - Acceso a vistas de solicitudes.
-## Compras_Responsable:
+## 4.5. Compras_Responsable:
 
 - Control sobre las tablas relacionadas con pedidos de compras (Pedidos_Compras, Detalle_Pedidos_Compras).
 - Permisos para seleccionar, insertar y actualizar la tabla Proveedores.
 - Acceso de solo lectura a la tabla Autorizaciones.
 - Acceso a vistas de stock y movimientos.
 - Ejecución de funciones para obtener cantidades de materiales por centro y stock en particular.
-## Compras_Administrativo:
+## 4.6. Compras_Administrativo:
 
 - Permisos para seleccionar, insertar y actualizar los registros en las tablas Pedidos_Compras y Detalle_Pedidos_Compras.
 - Acceso a vistas de stock.
 - Ejecución de funciones para obtener cantidades de materiales por centro y stock en particular.
-## Desarrollo_Dev:
+## 4.7. Desarrollo_Dev:
 
 - Permisos sobre todas las tablas para realizar desarrollos y testear actualizaciones.
-## Socio_Gerente:
+## 4.8. Socio_Gerente:
 
 - Privilegios de visualización completos sobre todas las tablas, debido a su rol de gestión.
 - Acceso a todas las vistas.
 - Ejecución del procedimiento de autorizacion de solicitudes.
 
-# Comandos nuevos del Makefile
-El Makefile incluye comandos esenciales para la gestión de la base de datos CentroLogistico dentro de un entorno Docker. A continuación se describe el propósito de cada uno de estos comandos:
+# 5. Comandos nuevos del Makefile
+El Makefile incluye comandos esenciales para la gestión de la base de datos CentroLogistico dentro de un entorno Docker. A continuación se describe el propósito de los nuevos comandos creados para ingresar por usuario de deposito y gestionar el backup de la base de datos:
 
-## access-deposito-resp-db:
+## 5.1. access-deposito-resp-db:
 
-- Descripción: Este comando permite acceder al cliente de MySQL utilizando las credenciales del usuario deposito_resp_user. Es útil para realizar consultas o modificaciones directamente en la base de datos desde la línea de comandos.
-- Uso:
-bash
+- **Descripción:** Este comando permite acceder al cliente de MySQL utilizando las credenciales del usuario deposito_resp_user. Es útil para realizar consultas o modificaciones directamente en la base de datos desde la línea de comandos.
+- **Uso:**
+```bash
 make access-deposito-resp-db
-- Detalles Técnicos:
-   - docker exec -it $(SERVICE_NAME) mysql -udeposito_resp_user -p1234: Ejecuta un comando dentro del contenedor Docker, iniciando una sesión interactiva en MySQL con el usuario deposito_resp_user y la contraseña 1234.
-   - $(SERVICE_NAME): Variable que representa el nombre del servicio Docker (generalmente el nombre del contenedor de la base de datos).
-## backup-db:
+```
+- **Detalles Técnicos:**
+   - "docker exec -it $(SERVICE_NAME) mysql -udeposito_resp_user -p1234": Ejecuta un comando dentro del contenedor Docker, iniciando una sesión interactiva en MySQL con el usuario deposito_resp_user y la contraseña 1234.
+   - "$(SERVICE_NAME)": Variable que representa el nombre del servicio Docker (generalmente el nombre del contenedor de la base de datos).
+## 5.2. backup-db:
 
-- Descripción: Este comando realiza una copia de seguridad de la base de datos CentroLogistico, incluyendo tanto la estructura como los datos, así como los procedimientos almacenados y funciones (gracias al flag --routines=true).
-- Uso:
-bash
+- **Descripción:** Este comando realiza una copia de seguridad de la base de datos CentroLogistico, incluyendo tanto la estructura como los datos, así como los procedimientos almacenados y funciones (gracias al flag --routines=true).
+- **Uso:**
+```bash
 make backup-db
-- Detalles Técnicos:
-   - docker exec -it $(SERVICE_NAME) mysqldump --routines=true -u$(MYSQL_USER) -p$(PASSWORD) --host 127.0.0.1 --port 3306 $(DATABASE) > ./backup/$(DATABASE)-backup.sql: Ejecuta un mysqldump dentro del contenedor Docker para generar un archivo de volcado (.sql) que contiene la estructura de la base de datos, los datos y los procedimientos almacenados.
-   - $(SERVICE_NAME): Nombre del servicio Docker que corre MySQL.
-   - $(MYSQL_USER) y $(PASSWORD): Credenciales del usuario de MySQL configurado.
-   - $(DATABASE): Nombre de la base de datos que se va a respaldar.
-   - --routines=true: Instruye a mysqldump para que incluya procedimientos almacenados y funciones en el respaldo.
-## restore-db:
+```
+- **Detalles Técnicos:**
+   - docker exec -it "$(SERVICE_NAME)" mysqldump --routines=true -"u$(MYSQL_USER)" -"p$(PASSWORD)" --host 127.0.0.1 --port 3306 "$(DATABASE)" > ./backup/"$(DATABASE)"-backup.sql: Ejecuta un mysqldump dentro del contenedor Docker para generar un archivo de volcado (.sql) que contiene la estructura de la base de datos, los datos y los procedimientos almacenados.
+   - "$(SERVICE_NAME)": Nombre del servicio Docker que corre MySQL.
+   - "$(MYSQL_USER)" y "$(PASSWORD)": Credenciales del usuario de MySQL configurado.
+   - "$(DATABASE)": Nombre de la base de datos que se va a respaldar.
+   - "--routines=true": Instruye a mysqldump para que incluya procedimientos almacenados y funciones en el respaldo.
+## 5.3. restore-db:
 
-- Descripción: Este comando restaura la base de datos desde un archivo de respaldo previamente generado. Es necesario editar el archivo de respaldo antes de restaurarlo.
-- Uso:
-bash
+- **Descripción:** Este comando restaura la base de datos desde un archivo de respaldo previamente generado. Es necesario editar el archivo de respaldo antes de restaurarlo.
+- **Uso:**
+```bash
 make restore-db
-- Detalles Técnicos:
-   - Antes de ejecutar:
+```
+- **Detalles Técnicos:**
+   - **Antes de ejecutar:**
       - Editar el archivo de respaldo:
       - Añadir las líneas DROP DATABASE IF EXISTS CentroLogistico;, CREATE DATABASE CentroLogistico; y USE CentroLogistico; al comienzo del archivo de respaldo para asegurarse de que la base de datos se restaure correctamente.
       - Comentar la primera línea: Si el archivo incluye una advertencia sobre contraseñas, comente esa línea para evitar problemas durante la restauración.
-   - docker exec -i $(SERVICE_NAME) mysql -u$(MYSQL_USER) -p$(PASSWORD) < ./backup/$(DATABASE)-backup.sql: Restaura la base de datos ejecutando el archivo .sql dentro del contenedor Docker.
-   - $(SERVICE_NAME): Nombre del servicio Docker que corre MySQL.
-   - $(MYSQL_USER) y $(PASSWORD): Credenciales del usuario de MySQL configurado.
-   - $(DATABASE): Nombre de la base de datos que se va a restaurar.
+   - docker exec -i "$(SERVICE_NAME)" mysql -"u$(MYSQL_USER)" -"p$(PASSWORD)" < ./backup/"$(DATABASE)"-backup.sql: Restaura la base de datos ejecutando el archivo .sql dentro del contenedor Docker.
+   - "$(SERVICE_NAME)": Nombre del servicio Docker que corre MySQL.
+   - "$(MYSQL_USER)" y "$(PASSWORD)": Credenciales del usuario de MySQL configurado.
+   - "$(DATABASE)": Nombre de la base de datos que se va a restaurar.
 ## Consideraciones
-- Edición del archivo de respaldo: Antes de ejecutar el comando restore-db, es crucial editar el archivo de respaldo como se indicó anteriormente para asegurar que el proceso de restauración se realice sin problemas.
-- Directorio de respaldo: El archivo de respaldo se guarda en el directorio ./backup/ y lleva el nombre $(DATABASE)-backup.sql, lo cual facilita la organización de los respaldos.
+- **Edición del archivo de respaldo:** Antes de ejecutar el comando restore-db, es crucial editar el archivo de respaldo como se indicó anteriormente para asegurar que el proceso de restauración se realice sin problemas.
+- **Directorio de respaldo:** El archivo de respaldo se guarda en el directorio ./backup/ y lleva el nombre $(DATABASE)-backup.sql, lo cual facilita la organización de los respaldos.
