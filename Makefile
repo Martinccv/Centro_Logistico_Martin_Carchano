@@ -13,7 +13,7 @@ DOCKER_COMPOSE_FILE=./docker-compose.yml
 DATABASE_CREATION=./Proyecto_centro_logistico/Estructura_db.sql
 DATABASE_POPULATION=./Proyecto_centro_logistico/population.sql
 
-FILES=vistas funciones stored_procedures triggers
+FILES=vistas funciones stored_procedures triggers user_roles
 
 
 .PHONY: all up objects test-db access-db down
@@ -49,13 +49,17 @@ test-db:
 
 access-db:
 	@echo "Access to db-client"
-	docker exec -it $(SERVICE_NAME) mysql -u$(MYSQL_USER) -p$(PASSWORD) 
+	docker exec -it $(SERVICE_NAME) mysql -u$(MYSQL_USER) -p$(PASSWORD)
+
+access-deposito-resp-db:
+	@echo "Access to db-client"
+	docker exec -it $(SERVICE_NAME) mysql -udeposito_resp_user -p1234
 
 backup-db:
 	@echo "Back up database by structure and data"
 	# Dump MySQL database to a file
 	# para que te permita descargar con procedimientos
-	docker exec -it $(SERVICE_NAME) mysqldump --routines=true  -u root -p$(PASSWORD) $(DATABASE) > ./back-up/$(DATABASE)-backup.sql
+	docker exec -it $(SERVICE_NAME) mysqldump --routines=true -u$(MYSQL_USER) -p$(PASSWORD) --host 127.0.0.1 --port 3306 $(DATABASE) > ./$(DATABASE)-backup.sql
 
 down:
 	@echo "Remove the Database"
