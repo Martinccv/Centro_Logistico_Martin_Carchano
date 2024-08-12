@@ -604,3 +604,91 @@ Este trigger se activa antes de insertar un registro en Almacenes_Materiales par
 ### Propósito
 Garantizar que los movimientos de salida o transferencia de materiales se realicen solo si hay suficiente stock disponible.
 
+# Creacion de roles dentro de la base de datos
+
+Se han creado ocho roles con permisos específicos sobre la base de datos CentroLogistico. A continuación, se describen los roles y sus privilegios:
+
+## Deposito_Responsable:
+
+- Control completo sobre las tablas relacionadas con depósitos (Almacenes_Materiales, Almacenes_Maquinas, Movimientos,Detalle_Movimientos, Solicitudes, Detalle_Solicitudes).
+- Acceso de solo lectura a las tablas Pedidos_Compras y Autorizaciones.
+- Acceso a vistas relacionadas con depósitos y movimientos.
+- Ejecución de funciones para obtener estados de máquinas y cantidades de materiales.
+## Deposito_Administrativo:
+
+- Permisos para seleccionar, insertar y actualizar registros en las tablas relacionadas con depósitos y movimientos.
+Acceso a vistas relacionadas con depósitos y stock.
+- Ejecución de procedimientos para registrar entradas y salidas de materiales o máquinas.
+## Obra_Jefe:
+
+- Control sobre las tablas relacionadas con las obras (Almacenes_Materiales, Almacenes_Maquinas, Solicitudes, Detalle_Solicitudes, Movimientos, Detalle_Movimientos).
+- Acceso de solo lectura a la tabla Autorizaciones.
+- Acceso a vistas de solicitudes y movimientos.
+- Ejecución de funciones para obtener estados de máquinas y cantidades de materiales.
+## Obra_Capataz:
+
+- Permisos de lectura y actualización sobre las tablas Solicitudes y Detalle_Solicitudes.
+- Acceso a vistas de solicitudes.
+## Compras_Responsable:
+
+- Control sobre las tablas relacionadas con pedidos de compras (Pedidos_Compras, Detalle_Pedidos_Compras).
+- Permisos para seleccionar, insertar y actualizar la tabla Proveedores.
+- Acceso de solo lectura a la tabla Autorizaciones.
+- Acceso a vistas de stock y movimientos.
+- Ejecución de funciones para obtener cantidades de materiales por centro y stock en particular.
+## Compras_Administrativo:
+
+- Permisos para seleccionar, insertar y actualizar los registros en las tablas Pedidos_Compras y Detalle_Pedidos_Compras.
+- Acceso a vistas de stock.
+- Ejecución de funciones para obtener cantidades de materiales por centro y stock en particular.
+## Desarrollo_Dev:
+
+- Permisos sobre todas las tablas para realizar desarrollos y testear actualizaciones.
+## Socio_Gerente:
+
+- Privilegios de visualización completos sobre todas las tablas, debido a su rol de gestión.
+- Acceso a todas las vistas.
+- Ejecución del procedimiento de autorizacion de solicitudes.
+
+# Comandos nuevos del Makefile
+El Makefile incluye comandos esenciales para la gestión de la base de datos CentroLogistico dentro de un entorno Docker. A continuación se describe el propósito de cada uno de estos comandos:
+
+## access-deposito-resp-db:
+
+- Descripción: Este comando permite acceder al cliente de MySQL utilizando las credenciales del usuario deposito_resp_user. Es útil para realizar consultas o modificaciones directamente en la base de datos desde la línea de comandos.
+- Uso:
+bash
+make access-deposito-resp-db
+- Detalles Técnicos:
+   - docker exec -it $(SERVICE_NAME) mysql -udeposito_resp_user -p1234: Ejecuta un comando dentro del contenedor Docker, iniciando una sesión interactiva en MySQL con el usuario deposito_resp_user y la contraseña 1234.
+   - $(SERVICE_NAME): Variable que representa el nombre del servicio Docker (generalmente el nombre del contenedor de la base de datos).
+## backup-db:
+
+- Descripción: Este comando realiza una copia de seguridad de la base de datos CentroLogistico, incluyendo tanto la estructura como los datos, así como los procedimientos almacenados y funciones (gracias al flag --routines=true).
+- Uso:
+bash
+make backup-db
+- Detalles Técnicos:
+   - docker exec -it $(SERVICE_NAME) mysqldump --routines=true -u$(MYSQL_USER) -p$(PASSWORD) --host 127.0.0.1 --port 3306 $(DATABASE) > ./backup/$(DATABASE)-backup.sql: Ejecuta un mysqldump dentro del contenedor Docker para generar un archivo de volcado (.sql) que contiene la estructura de la base de datos, los datos y los procedimientos almacenados.
+   - $(SERVICE_NAME): Nombre del servicio Docker que corre MySQL.
+   - $(MYSQL_USER) y $(PASSWORD): Credenciales del usuario de MySQL configurado.
+   - $(DATABASE): Nombre de la base de datos que se va a respaldar.
+   - --routines=true: Instruye a mysqldump para que incluya procedimientos almacenados y funciones en el respaldo.
+## restore-db:
+
+- Descripción: Este comando restaura la base de datos desde un archivo de respaldo previamente generado. Es necesario editar el archivo de respaldo antes de restaurarlo.
+- Uso:
+bash
+make restore-db
+- Detalles Técnicos:
+   - Antes de ejecutar:
+      - Editar el archivo de respaldo:
+      - Añadir las líneas DROP DATABASE IF EXISTS CentroLogistico;, CREATE DATABASE CentroLogistico; y USE CentroLogistico; al comienzo del archivo de respaldo para asegurarse de que la base de datos se restaure correctamente.
+      - Comentar la primera línea: Si el archivo incluye una advertencia sobre contraseñas, comente esa línea para evitar problemas durante la restauración.
+   - docker exec -i $(SERVICE_NAME) mysql -u$(MYSQL_USER) -p$(PASSWORD) < ./backup/$(DATABASE)-backup.sql: Restaura la base de datos ejecutando el archivo .sql dentro del contenedor Docker.
+   - $(SERVICE_NAME): Nombre del servicio Docker que corre MySQL.
+   - $(MYSQL_USER) y $(PASSWORD): Credenciales del usuario de MySQL configurado.
+   - $(DATABASE): Nombre de la base de datos que se va a restaurar.
+## Consideraciones
+- Edición del archivo de respaldo: Antes de ejecutar el comando restore-db, es crucial editar el archivo de respaldo como se indicó anteriormente para asegurar que el proceso de restauración se realice sin problemas.
+- Directorio de respaldo: El archivo de respaldo se guarda en el directorio ./backup/ y lleva el nombre $(DATABASE)-backup.sql, lo cual facilita la organización de los respaldos.
