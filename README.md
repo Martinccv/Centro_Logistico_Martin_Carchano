@@ -1,6 +1,16 @@
 # Centro Logístico de Materiales y Máquinas
 Este documento proporciona una descripción completa de la base de datos del Centro Logístico de Materiales y Máquinas, diseñada para gestionar eficientemente el inventario, las solicitudes, movimientos y compras de materiales y máquinas entre diferentes centros de almacenamiento (obras y depósitos). Además, se incluyen las relaciones entre las tablas, así como los triggers, stored procedures, vistas y funciones que facilitan las operaciones diarias.
+## Introducción
+La base de datos CentroLogistico ha sido diseñada para gestionar eficientemente los recursos, materiales, y equipos de una empresa de construcción. Esta base de datos centraliza la información relacionada con el almacenamiento, el movimiento de materiales y máquinas entre distintos centros y obras, y la administración de pedidos de compra. De esta manera, facilita la coordinación entre diferentes sectores de la empresa, asegurando que los recursos estén disponibles cuando y donde se necesiten.
 
+## Objetivo
+El principal objetivo de CentroLogistico es optimizar la logística interna de la empresa mediante la digitalización y automatización de procesos clave como el control de inventarios, la gestión de solicitudes de materiales y equipos, y la realización de movimientos entre diferentes centros. Al centralizar la información y proporcionar herramientas para la toma de decisiones informadas, la base de datos contribuye a reducir costos, minimizar errores humanos y mejorar la eficiencia operativa en todas las fases de un proyecto de construcción.
+
+## Situación Problemática
+En el contexto de la construcción, la falta de control y la desorganización en la gestión de materiales y equipos pueden resultar en retrasos en las obras, incrementos en los costos, y una disminución en la calidad del trabajo. Tradicionalmente, la gestión de inventarios y el movimiento de recursos se han realizado de manera manual, lo cual es propenso a errores y difícil de escalar. La ausencia de un sistema centralizado para administrar estos procesos puede llevar a pérdidas de tiempo valioso, sobrecostos por falta de materiales o maquinaria, y una menor capacidad para responder rápidamente a los cambios en las necesidades del proyecto.
+
+## Modelo de Negocio
+El modelo de negocio que Centro Logístico apoya se basa en la eficiencia y la transparencia en la gestión de recursos dentro de la industria de la construcción. Al proporcionar un sistema robusto para la gestión de inventarios, solicitudes, movimientos, y pedidos, la empresa puede reducir costos operativos y mejorar su capacidad de cumplir con los plazos de entrega y presupuestos estipulados en cada proyecto. Además, el sistema permite un seguimiento preciso de los recursos, lo que facilita la toma de decisiones estratégicas y la planificación futura.
 ## Diagrama Entidad-Relación
 
 El siguiente diagrama muestra el modelo de entidad-relación del sistema:
