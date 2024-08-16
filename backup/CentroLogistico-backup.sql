@@ -21,7 +21,6 @@
 --
 DROP DATABASE IF EXISTS CentroLogistico;
 CREATE DATABASE CentroLogistico;
-
 USE CentroLogistico;
 
 DROP TABLE IF EXISTS `Almacenes_Maquinas`;
@@ -857,8 +856,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_AprobarORechazarSolicitud`(
     IN p_Accion VARCHAR(10) -- 'Aprobada' o 'Rechazada'
 )
 BEGIN
+
     DECLARE v_Accion_Valida BOOLEAN DEFAULT FALSE;
 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
     -- Comprobar si la acción es válida
     IF p_Accion = 'Aprobada' OR p_Accion = 'Rechazada' THEN
         SET v_Accion_Valida = TRUE;
@@ -877,6 +884,7 @@ BEGIN
         SET Estado = p_Accion
         WHERE ID_Solicitud = p_ID_Solicitud;
     END IF;
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -901,12 +909,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CrearSolicitud`(
     IN p_DetallesSolicitud JSON
 )
 BEGIN
+    
     DECLARE v_ID_Solicitud INT;
     DECLARE v_ID_Item INT;
     DECLARE v_Cantidad INT;
     DECLARE v_Index INT DEFAULT 0;
     DECLARE v_Limit INT;
 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
     -- Obtener el número de elementos en el JSON
     SET v_Limit = JSON_LENGTH(p_DetallesSolicitud);
 
@@ -935,7 +951,7 @@ BEGIN
         -- Incrementar el índice para la próxima iteración
         SET v_Index = v_Index + 1;
     END WHILE;
-
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -971,6 +987,7 @@ BEGIN
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
+    START TRANSACTION;
     -- Verificar si la solicitud está aprobada
     IF (SELECT COUNT(*) FROM Solicitudes WHERE ID_Solicitud = p_ID_Solicitud AND Estado = 'Aprobada') = 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La solicitud no está aprobada o no existe.';
@@ -1019,14 +1036,14 @@ BEGIN
     
      -- Eliminar el pedido de compras si no se han creado detalles
     IF NOT EXISTS (SELECT 1 FROM Detalle_Pedidos_Compras WHERE ID_Pedido = v_ID_Pedido) THEN
-        DELETE FROM Pedidos_Compras WHERE ID_Pedido = v_ID_Pedido;
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se ha generado pedido de compras, el stock es suficiente';
     END IF;
-
+    COMMIT;
     -- Señalar una advertencia al final del procedimiento si hay materiales completamente disponibles
     IF msj = 1 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ADVERTENCIA: Uno o más materiales están completamente disponibles en depósitos.';
     END IF;
-
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1050,12 +1067,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_RealizarMovimientoMaquinas`(
     IN p_Maquinas JSON -- JSON con pares {ID_Maquina:}
 )
 BEGIN
+    
     DECLARE v_ID_Centro_Destino INT;
     DECLARE v_ID_Movimiento INT;
     DECLARE v_ID_Maquina INT;
     DECLARE v_Indice INT DEFAULT 0;
     -- DECLARE v_ID_Autorizacion INT;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
 
+    START TRANSACTION;
     -- Obtener el centro de destino de la solicitud
     SELECT ID_Centro INTO v_ID_Centro_Destino
     FROM Solicitudes
@@ -1089,6 +1113,7 @@ BEGIN
 
         SET v_Indice = v_Indice + 1;
     END WHILE;
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1112,6 +1137,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_RealizarMovimientoMateriales`(
     IN p_Materiales JSON -- JSON con pares {ID_Material:, Cantidad:}
 )
 BEGIN
+    
     DECLARE v_ID_Centro_Destino INT;
     DECLARE v_ID_Movimiento INT;
     DECLARE v_Cantidad INT;
@@ -1119,6 +1145,13 @@ BEGIN
     DECLARE v_Indice INT DEFAULT 0;
     -- DECLARE v_Id_Autorizacion INT;
 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
     -- Obtener el centro de destino de la solicitud
     SELECT ID_Centro INTO v_ID_Centro_Destino
     FROM Solicitudes
@@ -1153,6 +1186,7 @@ BEGIN
         VALUES (v_ID_Movimiento, p_ID_Centro_Origen, v_ID_Centro_Destino, v_ID_Material, v_Cantidad);
         SET v_Indice = v_Indice + 1;
     END WHILE;
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1177,8 +1211,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_RegistrarEntrada`(
     IN p_ID_Empleado INT
 )
 BEGIN
+
     DECLARE v_ID_Movimiento INT;
 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
     -- Registrar el movimiento en la tabla 'Movimientos'
     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
     VALUES (CURDATE(), 'Entrada', p_ID_Empleado);
@@ -1203,6 +1245,7 @@ BEGIN
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
         VALUES (v_ID_Movimiento, p_ID_Centro, 1, p_ID_Item);
     END IF;
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1227,8 +1270,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_RegistrarSalida`(
     IN p_ID_Empleado INT
 )
 BEGIN
-    DECLARE v_ID_Movimiento INT;
     
+
+    
+    DECLARE v_ID_Movimiento INT;
+
+     DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacer la transacción
+        ROLLBACK;
+    END;
+    
+    START TRANSACTION;
     -- Registrar el movimiento en la tabla 'Movimientos'
     INSERT INTO Movimientos (Fecha, Tipo, ID_Empleado)
     VALUES (CURDATE(), 'Salida', p_ID_Empleado);
@@ -1253,6 +1306,7 @@ BEGIN
         INSERT INTO Detalle_Movimientos (ID_Movimiento, ID_Almacen_Destino, Cantidad, ID_Maquina)
         VALUES (v_ID_Movimiento, p_ID_Centro, -1, p_ID_Item);
     END IF;
+    COMMIT;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1395,4 +1449,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-12 18:15:57
+-- Dump completed on 2024-08-16 13:01:22
