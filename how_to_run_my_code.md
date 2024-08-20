@@ -96,4 +96,4 @@ Elimina la base de datos.
 Detiene y elimina los contenedores de Docker.
 
 ### Información Adicional
-Para más detalles sobre cómo funciona cada comando, consulta el archivo Makefile en el repositorio.
+Para más detalles sobre cómo funciona cada comando, consulta el archivo Makefile  y el README en el repositorio.
