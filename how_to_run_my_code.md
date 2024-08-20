@@ -1,4 +1,4 @@
-# How to Run the Project
+# Como correr el proyecto
 
 Este documento te guiará en los pasos necesarios para ejecutar el proyecto que gestiona la base de datos del sistema del centro logístico utilizando Docker y MySQL.
 
