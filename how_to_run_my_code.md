@@ -29,7 +29,7 @@ MYSQL_ROOT_PASSWORD=123456
 MYSQL_USER=root
 ```
 ### Recomendaciones antes de empezar
-Recomendamos usar la terminal del codespace de github para trabajar con la base de datos:
+Recomiendo usar la terminal del codespace de github para trabajar con la base de datos:
 1. Para ingresar dentro del repositorio del proyecto, en la parte superior aparece un icono verde que dice "<> code".
 2. Presionalo y se abrira una pestaña, dentro de ella presiona el boton "Create codespace on master", y te abrira el entorno para empezar a trabajar.
 3. Luego elige la terminal en la parte inferior, asegurate de estar parado sobre el directorio /workspaces/Centro_Logistico_Martin_Carchano (master) $ e ingresa los codigos mencionados a continuación.
